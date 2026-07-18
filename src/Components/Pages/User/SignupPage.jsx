@@ -2,10 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   createUser,
-  createSession,
   isStrongPassword,
   isValidEmail,
-} from "../utils/auth";
+} from "../../../utils/auth";
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -19,8 +18,8 @@ export default function SignupPage() {
     terms: false,
   });
 
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -41,19 +40,19 @@ export default function SignupPage() {
     }
 
     if (!isValidEmail(formData.email)) {
-      return setError("Enter a valid email address.");
+      return setError("Please enter a valid email.");
     }
 
     if (
       formData.phone &&
       formData.phone.replace(/\D/g, "").length < 10
     ) {
-      return setError("Enter a valid phone number.");
+      return setError("Please enter a valid phone number.");
     }
 
     if (!isStrongPassword(formData.password)) {
       return setError(
-        "Password must contain at least 8 characters including one number."
+        "Password must contain at least 8 characters and one number."
       );
     }
 
@@ -62,33 +61,37 @@ export default function SignupPage() {
     }
 
     if (!formData.terms) {
-      return setError("Please accept the terms.");
+      return setError("Please accept the terms and conditions.");
     }
 
     try {
       setLoading(true);
 
-      const user = await createUser({
+      await createUser({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         password: formData.password,
       });
 
-      createSession(user, true);
+      alert("Account created successfully!");
 
-      navigate("/account");
+      navigate("/login");
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+
+      setError(
+        err.response?.data?.message ||
+          "Registration failed."
+      );
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="auth-shell">
-
       <div className="auth-brand">
-
         <div className="auth-logo">
           <div className="seal-mark">LC</div>
 
@@ -110,17 +113,13 @@ export default function SignupPage() {
           </h1>
 
           <p>
-            Create an account to track your
-            matter.
+            Create an account to track your matter.
           </p>
         </div>
-
       </div>
 
       <div className="auth-form-side">
-
         <div className="auth-card">
-
           <Link
             to="/"
             className="back-home"
@@ -144,7 +143,6 @@ export default function SignupPage() {
           )}
 
           <form onSubmit={handleSubmit}>
-
             <div className="field">
               <label>Full Name</label>
 
@@ -201,7 +199,6 @@ export default function SignupPage() {
             </div>
 
             <div className="check-row">
-
               <input
                 type="checkbox"
                 name="terms"
@@ -210,13 +207,12 @@ export default function SignupPage() {
               />
 
               <label>
-                I agree to the terms and
-                conditions.
+                I agree to the Terms & Conditions.
               </label>
-
             </div>
 
             <button
+              type="submit"
               className="submit-btn"
               disabled={loading}
             >
@@ -224,13 +220,9 @@ export default function SignupPage() {
                 ? "Creating..."
                 : "Create Account"}
             </button>
-
           </form>
-
         </div>
-
       </div>
-
     </div>
   );
 }

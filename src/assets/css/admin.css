@@ -1,0 +1,468 @@
+/* =========================
+   LEX CORPUS â€” Admin Layout
+   Same class names as before â€” drop-in replacement.
+   Requires bootstrap.min.css to be imported (see README).
+========================= */
+
+:root {
+  --gold: #d4af37;
+  --gold-dark: #b8941f;
+  --navy: #0f172a;
+  --navy-soft: #1a2333;
+  --page-bg: #f4f6f9;
+  --border: #ececec;
+  --text: #1f2937;
+  --text-light: #6b7280;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.admin-sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: var(--navy);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0; /* stops the sidebar from ever being squeezed by the table's min-width columns pushing the flex row wider */
+}
+
+/* =========================
+   LOGO
+========================= */
+
+.admin-logo {
+  padding: 32px 20px 26px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-logo i,
+.admin-logo svg {
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.admin-logo h4 {
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 4px;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+.admin-logo small,
+.admin-logo p {
+  color: #94a3b8; /* was gold-on-gold before â€” the "Admin Panel" subtitle was nearly invisible against the logo */
+  font-size: 13px;
+  margin: 0;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.admin-menu {
+  flex: 1;
+  padding: 22px 14px;
+  overflow-y: auto;
+}
+
+.admin-menu a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #cbd5e1;
+  font-size: 14.5px;
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.admin-menu a svg {
+  flex-shrink: 0;
+}
+
+.admin-menu a:hover {
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--gold);
+  transform: translateX(4px);
+}
+
+.admin-menu a.active {
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25);
+}
+
+.admin-menu a.active:hover {
+  transform: none; /* an active item sliding on hover reads as broken, not interactive */
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+.admin-footer {
+  padding: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-footer button,
+.admin-footer a {
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.admin-navbar {
+  height: 75px;
+  background: #fff;
+  display: flex;
+  justify-content: space-between; /* was space-evenly, which spaces items by equal gaps regardless of content â€” that's what pushed the bell icon away from the profile block instead of grouping them on the right */
+  align-items: center; /* was "baseline", which aligns by text baseline and is why the heading/date and the bell/avatar sat at different heights */
+  padding: 0 32px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.admin-navbar h5 {
+  margin: 0; /* was "margin: 20" â€” not a valid CSS length, so it was silently ignored; explicit 0 keeps the title tight against the date line */
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text);
+}
+
+.admin-navbar small {
+  color: var(--text-light);
+  font-size: 12.5px;
+}
+
+.admin-navbar-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+/* =========================
+   NOTIFICATION
+========================= */
+
+/* the bell needs to be the positioned ancestor for the dot â€”
+   without this, .notification-dot's position:absolute has no
+   local anchor and jumps to the corner of the whole page,
+   which is the floating red dot you're seeing in the top right */
+.notification-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--page-bg);
+  color: var(--text-light);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  border: none;
+}
+
+.notification-btn:hover {
+  background: #e9ecf3;
+  color: var(--text);
+}
+
+.notification-dot {
+  width: 9px;
+  height: 9px;
+  background: #ef4444;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-profile:hover {
+  background: var(--page-bg);
+}
+
+.admin-profile img,
+.admin-profile svg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--page-bg);
+  padding: 6px;
+  flex-shrink: 0;
+}
+
+.admin-profile-info {
+  text-align: left; /* was "right" â€” right-aligned text next to a left-side avatar reads awkwardly; left keeps name/role hugging the avatar */
+  line-height: 1.3;
+}
+
+.admin-profile-info h6 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.admin-profile-info span {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 992px) {
+  .admin-sidebar {
+    width: 220px;
+  }
+
+  .admin-navbar {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 76px;
+  }
+
+  .admin-logo h4,
+  .admin-logo small,
+  .admin-logo p,
+  .admin-menu a span {
+    display: none;
+  }
+
+  .admin-menu a {
+    justify-content: center;
+  }
+
+  .admin-navbar-title small {
+    display: none;
+  }
+
+  .admin-profile-info {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-navbar {
+    padding: 0 14px;
+  }
+
+  .admin-navbar-right {
+    gap: 12px;
+  }
+}
+
+/* =========================================================
+   Bootstrap theme overrides â€” Lex Corpus brand
+   Load AFTER bootstrap.min.css, BEFORE admin.css.
+   Only touches components your admin pages actually use:
+   card, table, form-control/select, badge, btn, alert, spinner.
+========================================================= */
+
+:root {
+  --lc-gold: #d4af37;
+  --lc-gold-dark: #b8941f;
+  --lc-navy: rgb(60, 97, 92);
+  --lc-text:rgb(42, 40, 40);
+  --lc-text-light: white;
+  --lc-border: #e5e7eb;
+}
+
+/* ---- cards ---- */
+.card {
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.07);
+}
+
+.card-header.bg-dark {
+  background: var(--lc-navy) !important;
+  border-bottom: 3px solid var(--lc-gold);
+  padding: 16px 22px;
+}
+
+.card-header .badge.bg-warning {
+  background: var(--lc-gold) !important;
+  color: var(--lc-navy) !important;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 30px;
+}
+
+.card-body h6 {
+  color: var(--lc-text-light);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.card-body h2 {
+  font-weight: 700;
+  color: var(--lc-text);
+}
+
+/* the stat cards on the dashboard get a gold accent instead of
+   plain flat white so they read as branded, not generic bootstrap */
+.card.border-0.shadow {
+  border-left: 4px solid var(--lc-gold) !important;
+}
+
+/* ---- table ---- */
+.table {
+  --bs-table-striped-bg: #faf7ee;
+  --bs-table-hover-bg: #fbf3dd;
+  margin-bottom: 0;
+  font-size: 13.5px;
+}
+
+.table thead.table-dark th,
+.table-dark th {
+  background: var(--lc-navy) !important;
+  color: #e2e8f0 !important;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 14px 16px;
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: 14px 16px;
+  vertical-align: middle;
+  border-color: var(--lc-border);
+}
+
+.table-responsive {
+  border-radius: 0 0 14px 14px;
+  overflow: hidden;
+}
+
+/* ---- badges (status pills) ---- */
+.badge {
+  font-weight: 600;
+  padding: 6px 13px;
+  border-radius: 30px;
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+}
+
+.badge.bg-success { background: #22c55e !important; }
+.badge.bg-warning { background: #f59e0b !important; color: #1f2937 !important; }
+.badge.bg-danger  { background: #ef4444 !important; }
+
+/* ---- form controls (search box, status filters) ---- */
+.form-control,
+.form-select {
+  border: 1px solid var(--lc-border);
+  border-radius: 10px;
+  height: 44px;
+  padding: 0 16px;
+  font-size: 13.5px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--lc-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+/* the small per-row "Update Status" select needs to be more
+   compact than the page-level filters above */
+td .form-select {
+  height: 36px;
+  font-size: 12.5px;
+  padding: 0 10px;
+}
+
+/* ---- buttons ---- */
+.btn-warning {
+  background: var(--lc-gold);
+  border-color: var(--lc-gold);
+  color: var(--lc-navy);
+  font-weight: 600;
+}
+
+.btn-warning:hover {
+  background: var(--lc-gold-dark);
+  border-color: var(--lc-gold-dark);
+  color: var(--lc-navy);
+}
+
+.btn-dark {
+  background: var(--lc-navy);
+  border-color: var(--lc-navy);
+  font-weight: 600;
+}
+
+.btn-dark:hover {
+  background: #1a2333;
+  border-color: #1a2333;
+}
+
+/* ---- alerts ---- */
+.alert-warning {
+  background: #fdf6e3;
+  border: 1px solid #f2dfa3;
+  color: #8a6d1f;
+  border-radius: 12px;
+}
+
+/* ---- spinner ---- */
+.spinner-border.text-warning {
+  color: var(--lc-gold) !important;
+}
+
+/* ---- page shell spacing ---- */
+.container-fluid h2.fw-bold {
+  color: var(--lc-text);
+  letter-spacing: -0.01em;
+}

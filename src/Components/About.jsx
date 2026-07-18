@@ -14,6 +14,7 @@ export default function About() {
                         <p>We take on individuals, founders, and enterprises alike — and we tell you plainly, at the first meeting, whether a matter is worth pursuing.</p>
                     </div></div>
             </section>
+           
     </>
   )
 }

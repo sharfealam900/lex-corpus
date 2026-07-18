@@ -5,6 +5,8 @@ import About from "../About";
 import Insights from "../Insights";
 import ContactUs from "../ContactUs";
 import Navbar from "../Navbar";
+import Footer from "../Footer";
+
 
  
 
@@ -19,9 +21,9 @@ export default function Home() {
           <Insights/>
           <ContactUs/>
 
+          <Footer/>
+
         </>
-
-
 
     );
 }

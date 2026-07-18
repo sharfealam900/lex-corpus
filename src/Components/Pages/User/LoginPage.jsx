@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { createSession } from "../../../utils/auth";
-
+import {
+  verifyUser,
+  createSession,
+  isValidEmail,
+} from "../../../utils/auth";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -13,7 +16,7 @@ export default function LoginPage() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -31,35 +34,39 @@ export default function LoginPage() {
     setError("");
 
     if (!isValidEmail(formData.email)) {
-      return setError("Enter a valid email address.");
+      return setError("Please enter a valid email address.");
     }
 
     if (!formData.password) {
-      return setError("Enter your password.");
+      return setError("Please enter your password.");
     }
 
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const user = await verifyUser(
-      formData.email,
-      formData.password
-    );
+      const user = await verifyUser(
+        formData.email,
+        formData.password
+      );
 
-    if (!user) {
+      createSession(user);
+
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+
+      setError(
+        err.response?.data?.message ||
+          "Invalid email or password."
+      );
+    } finally {
       setLoading(false);
-      return setError("Incorrect email or password.");
     }
-
-    createSession(user, formData.remember);
-
-    navigate("/account");
   };
 
   return (
     <div className="auth-shell">
-
       <div className="auth-brand">
-
         <div className="auth-logo">
           <div className="seal-mark">LC</div>
 
@@ -86,13 +93,10 @@ export default function LoginPage() {
             your previous submissions.
           </p>
         </div>
-
       </div>
 
       <div className="auth-form-side">
-
         <div className="auth-card">
-
           <Link
             to="/"
             className="back-home"
@@ -116,9 +120,7 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit}>
-
             <div className="field">
-
               <label>Email Address</label>
 
               <input
@@ -128,15 +130,12 @@ export default function LoginPage() {
                 onChange={handleChange}
                 placeholder="you@email.com"
               />
-
             </div>
 
             <div className="field">
-
               <label>Password</label>
 
               <div className="input-wrap">
-
                 <input
                   type={
                     showPassword
@@ -162,15 +161,11 @@ export default function LoginPage() {
                     ? "Hide"
                     : "Show"}
                 </button>
-
               </div>
-
             </div>
 
             <div className="remember-row">
-
               <label>
-
                 <input
                   type="checkbox"
                   name="remember"
@@ -179,7 +174,6 @@ export default function LoginPage() {
                 />
 
                 Keep me signed in
-
               </label>
 
               <button
@@ -193,10 +187,10 @@ export default function LoginPage() {
               >
                 Forgot Password?
               </button>
-
             </div>
 
             <button
+              type="submit"
               className="submit-btn"
               disabled={loading}
             >
@@ -204,13 +198,9 @@ export default function LoginPage() {
                 ? "Signing In..."
                 : "Sign In"}
             </button>
-
           </form>
-
         </div>
-
       </div>
-
     </div>
   );
 }
