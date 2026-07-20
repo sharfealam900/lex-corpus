@@ -1,9 +1,10 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { getSession, logout } from "../utils/auth";
 
-export default function Navbar() {
+export default function Navbar({ activeSection = "home" }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = getSession();
 
   const handleLogout = async () => {
@@ -12,9 +13,27 @@ export default function Navbar() {
     window.location.reload();
   };
 
+  const handleSectionClick = (section) => {
+    if (location.pathname === "/") {
+      document.getElementById(section)?.scrollIntoView({
+        behavior: "smooth",
+      });
+    } else {
+      navigate("/", {
+        state: {
+          scrollTo: section,
+        },
+      });
+    }
+  };
+
+  const sectionClass = (section) =>
+    activeSection === section ? "active" : "";
+
   return (
     <header className="header">
       <div className="wrap nav-inner">
+        {/* Logo */}
         <div className="logo">
           <div className="seal-mark">LC</div>
 
@@ -24,16 +43,47 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* Navigation */}
         <nav className="primary">
-          <NavLink to="/">Home</NavLink>
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive && activeSection === "home" ? "active" : ""
+            }
+          >
+            Home
+          </NavLink>
+
           <NavLink to="/blog">Blogs</NavLink>
-          <a href="#practice">Practice</a>
-          <a href="#about">About</a>
-          <a href="#insights">Insights</a>
+
+          <span
+            className={activeSection === "practice" ? "active" : ""}
+            onClick={() => handleSectionClick("practice")}
+          >
+            Practice
+          </span>
+
+          <span
+            className={activeSection === "about" ? "active" : ""}
+            onClick={() => handleSectionClick("about")}
+          >
+            About
+          </span>
+
+          <span
+            className={activeSection === "insights" ? "active" : ""}
+            onClick={() => handleSectionClick("insights")}
+          >
+            Insights
+          </span>
+
+          
+
           <NavLink to="/contactUs">Contact</NavLink>
         </nav>
 
-        <div className="nav-actions d-flex me-2">
+        {/* Right Buttons */}
+        <div className="nav-actions d-flex align-items-center gap-2">
           {!user ? (
             <>
               <NavLink to="/login" className="btn btn-outline">
@@ -43,6 +93,10 @@ export default function Navbar() {
               <NavLink to="/signup" className="btn btn-primary">
                 Sign Up
               </NavLink>
+
+              <NavLink to="/contactUs" className="btn btn-primary">
+                Book a Consultation
+              </NavLink>
             </>
           ) : (
             <>
@@ -50,18 +104,30 @@ export default function Navbar() {
                 {user.fullname?.split(" ")[0]}
               </NavLink>
 
+              {user.role === "admin" ? (
+                <NavLink
+                  to="/admin/dashboard"
+                  className="btn btn-primary"
+                >
+                  Admin Dashboard
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/contactUs"
+                  className="btn btn-primary"
+                >
+                  Book a Consultation
+                </NavLink>
+              )}
+
               <button
-                className="btn btn-primary"
+                className="btn btn-danger"
                 onClick={handleLogout}
               >
                 Logout
               </button>
             </>
           )}
-
-          <a href="#contact" className="btn btn-primary">
-            Book a Consultation
-          </a>
         </div>
       </div>
     </header>

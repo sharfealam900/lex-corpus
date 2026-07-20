@@ -321,9 +321,12 @@
 }
 
 .card-header.bg-dark {
-  background: var(--lc-navy) !important;
+  background: rgb(113, 120, 106);
   border-bottom: 3px solid var(--lc-gold);
   padding: 16px 22px;
+  border-radius:20px;
+  text-align: center;
+  
 }
 
 .card-header .badge.bg-warning {
@@ -335,11 +338,12 @@
 }
 
 .card-body h6 {
-  color: var(--lc-text-light);
+  color: var(--lc-text-black);
   font-size: 12.5px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  
 }
 
 .card-body h2 {
@@ -351,13 +355,16 @@
    plain flat white so they read as branded, not generic bootstrap */
 .card.border-0.shadow {
   border-left: 4px solid var(--lc-gold) !important;
+  margin-top: 4px;
+  margin-bottom: 10px;
 }
 
 /* ---- table ---- */
 .table {
   --bs-table-striped-bg: #faf7ee;
   --bs-table-hover-bg: #fbf3dd;
-  margin-bottom: 0;
+  margin-bottom: 10px;
+  margin-top: 10px;
   font-size: 13.5px;
 }
 
@@ -365,13 +372,14 @@
 .table-dark th {
   background: var(--lc-navy) !important;
   color: #e2e8f0 !important;
-  border: none;
+  border:none;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 14px 16px;
   white-space: nowrap;
+  
 }
 
 .table tbody td {
@@ -441,6 +449,7 @@ td .form-select {
   background: var(--lc-navy);
   border-color: var(--lc-navy);
   font-weight: 600;
+  margin-top: 10px;
 }
 
 .btn-dark:hover {
@@ -465,4 +474,52 @@ td .form-select {
 .container-fluid h2.fw-bold {
   color: var(--lc-text);
   letter-spacing: -0.01em;
+}
+
+.dashboard-wrapper{
+
+    max-width:1400px;
+
+    margin:auto;
+
+}
+
+.dashboard-wrapper .row{
+
+    align-items:stretch;
+
+}
+
+.dashboard-wrapper .card{
+
+    height:100%;
+
+}
+
+.dashboard-wrapper .card-body{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+}
+
+.card{
+
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.table-responsive{
+
+    overflow-x:auto;
+
 }

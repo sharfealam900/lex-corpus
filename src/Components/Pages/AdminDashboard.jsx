@@ -59,7 +59,7 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="container-fluid py-4">
+      <div className="container-fluid py-4 dashboard-wrapper">
 
         <h2 className="fw-bold mb-4">
           Admin Dashboard
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
 
         </div>
 
-        <div className="card shadow mt-5">
+        <div className="card shadow mt-50">
 
           <div className="card-header bg-dark text-white">
             <h5 className="mb-0">
@@ -119,7 +119,7 @@ export default function AdminDashboard() {
             </h5>
           </div>
 
-          <div className="card-body">
+          <div className="card-body ">
 
             {recentQueries.length === 0 ? (
               <h6>No Queries Found</h6>

@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Navbar from "./Navbar";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { getSession } from "../utils/auth";
 
 export default function ContactUs() {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         fullname: "",
         phoneNumber: "",
@@ -24,6 +28,31 @@ export default function ContactUs() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Check login every time user clicks submit
+        const user = getSession();
+
+        if (!user) {
+            Swal.fire({
+                icon: "warning",
+                title: "Login Required",
+                text: "Please sign in to submit your legal query.",
+                confirmButtonText: "Go to Login",
+                confirmButtonColor: "#b8860b",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate("/login", {
+                        state: {
+                            from: "/contactUs",
+                        },
+                    });
+                }
+            });
+
+            return;
+        }
+
         try {
             setLoading(true);
 
@@ -35,7 +64,15 @@ export default function ContactUs() {
                 }
             );
 
-            alert(data.message);
+            await Swal.fire({
+                icon: "success",
+                title: "Query Submitted Successfully",
+                text: "Redirecting to Home...",
+                timer: 3000,
+                showConfirmButton: false,
+            });
+
+            navigate("/");
 
             setFormData({
                 fullname: "",
@@ -46,186 +83,179 @@ export default function ContactUs() {
                 message: "",
             });
         } catch (error) {
-            alert(
-                error.response?.data?.message || "Something went wrong."
-            );
+            Swal.fire({
+                icon: "error",
+                title: "Submission Failed",
+                text:
+                    error.response?.data?.message ||
+                    "Something went wrong.",
+                confirmButtonColor: "#dc3545",
+            });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <>
-            {/* <Navbar /> */}
+        <section className="contact" id="contact">
+            <div className="wrap contact-grid">
+                <div className="contact-info">
+                    <div className="eyebrow">Get in touch</div>
 
-            <section className="contact" id="contact">
-                <div className="wrap contact-grid">
+                    <h2>State your matter</h2>
 
-                    <div className="contact-info">
-                        <div className="eyebrow">Get in touch</div>
+                    <p>
+                        Tell us briefly what's happened and what you need.
+                        An associate from the relevant practice group will
+                        review it and respond within one business day —
+                        every submission is confidential.
+                    </p>
 
-                        <h2>State your matter</h2>
+                    <ul className="info-list">
+                        <li>
+                            <span className="k">Office</span>
 
-                        <p>
-                            Tell us briefly what's happened and what you need.
-                            An associate from the relevant practice group will
-                            review it and respond within one business day —
-                            every submission is confidential.
-                        </p>
+                            <span className="v">
+                                4th Floor, Fatima Apartment
+                                <span>Jamia Nagar, New Delhi 110025</span>
+                            </span>
+                        </li>
 
-                        <ul className="info-list">
-                            <li>
-                                <span className="k">Office</span>
+                        <li>
+                            <span className="k">Phone</span>
 
-                                <span className="v">
-                                    4th Floor, Fatima Apartment
-                                    <span>
-                                        Jamia Nagar, New Delhi 110025
-                                    </span>
+                            <span className="v">
+                                +91 7834818160
+                                <span>Mon–Sat, 9:30am–10:00pm IST</span>
+                            </span>
+                        </li>
+
+                        <li>
+                            <span className="k">Email</span>
+
+                            <span className="v">
+                                lexcorpuservice.gmail.com
+                                <span>
+                                    For new matters and general queries
                                 </span>
-                            </li>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
 
-                            <li>
-                                <span className="k">Phone</span>
+                <form
+                    className="brief-form"
+                    onSubmit={handleSubmit}
+                >
+                    <div className="form-row">
+                        <div className="field">
+                            <label>Full name</label>
 
-                                <span className="v">
-                                    +91 7834818160
-                                    <span>
-                                        Mon–Sat, 9:30am–10:00pm IST
-                                    </span>
-                                </span>
-                            </li>
+                            <input
+                                type="text"
+                                name="fullname"
+                                placeholder="Your name"
+                                value={formData.fullname}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
 
-                            <li>
-                                <span className="k">Email</span>
+                        <div className="field">
+                            <label>Phone number</label>
 
-                                <span className="v">
-                                    lexcorpuservice.gmail.com
-                                    <span>
-                                        For new matters and general queries
-                                    </span>
-                                </span>
-                            </li>
-                        </ul>
+                            <input
+                                type="tel"
+                                name="phoneNumber"
+                                placeholder="+91 98XXX XXXXX"
+                                value={formData.phoneNumber}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
                     </div>
 
-                    <form
-                        className="brief-form"
-                        id="briefForm"
-                        onSubmit={handleSubmit}
-                    >
-                        <div className="form-row">
-                            <div className="field">
-                                <label htmlFor="name">Full name</label>
-                                <input
-                                    id="name"
-                                    name="fullname"
-                                    type="text"
-                                    placeholder="Your name"
-                                    value={formData.fullname}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                    <div className="form-row">
+                        <div className="field">
+                            <label>Email address</label>
 
-                            <div className="field">
-                                <label htmlFor="phone">Phone number</label>
-                                <input
-                                    id="phone"
-                                    name="phoneNumber"
-                                    type="tel"
-                                    placeholder="+91 98XXX XXXXX"
-                                    value={formData.phoneNumber}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="you@email.com"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
                         </div>
 
-                        <div className="form-row">
-                            <div className="field">
-                                <label htmlFor="email">Email address</label>
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    placeholder="you@email.com"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+                        <div className="field">
+                            <label>Practice area</label>
 
-                            <div className="field">
-                                <label htmlFor="area">Practice area</label>
-                                <select
-                                    id="area"
-                                    name="practiceArea"
-                                    value={formData.practiceArea}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">Select an area</option>
-                                    <option>Criminal law</option>
-                                    <option>Civil litigation</option>
-                                    <option>Intellectual property</option>
-                                    <option>Cyber enforcement &amp; data law</option>
-                                    <option>Taxation</option>
-                                    <option>Corporate &amp; commercial</option>
-                                    <option>Matrimonial &amp; family law</option>
-                                    <option>Not sure — advise me</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="form-row">
-                            <div className="field full">
-                                <label htmlFor="subject">Subject</label>
-                                <input
-                                    id="subject"
-                                    name="subject"
-                                    type="text"
-                                    placeholder="Enter subject"
-                                    value={formData.subject}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="form-row">
-                            <div className="field full">
-                                <label htmlFor="brief">Brief of matter</label>
-
-                                <textarea
-                                    id="brief"
-                                    name="message"
-                                    placeholder="Describe what happened, when, and what you're looking to achieve. Include any dates, notices, or filings already in motion."
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                    required
-                                ></textarea>
-                            </div>
-                        </div>
-                        <div className="submit-row">
-                            <span className="note">
-                                By submitting, you agree this does not yet create an
-                                attorney-client relationship.
-                            </span>
-
-                            <button
-                                type="submit"
-                                className="submit-btn"
-                                disabled={loading}
+                            <select
+                                name="practiceArea"
+                                value={formData.practiceArea}
+                                onChange={handleChange}
+                                required
                             >
-                                {loading ? "Submitting..." : "Submit brief"}
-                            </button>
+                                <option value="">Select an area</option>
+                                <option>Criminal law</option>
+                                <option>Civil litigation</option>
+                                <option>Intellectual property</option>
+                                <option>Cyber enforcement & data law</option>
+                                <option>Taxation</option>
+                                <option>Corporate & commercial</option>
+                                <option>Matrimonial & family law</option>
+                                <option>Not sure — advise me</option>
+                            </select>
                         </div>
-                    </form>
+                    </div>
 
-                </div>
-            </section>
-        </>
+                    <div className="form-row">
+                        <div className="field full">
+                            <label>Subject</label>
+
+                            <input
+                                type="text"
+                                name="subject"
+                                placeholder="Enter subject"
+                                value={formData.subject}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-row">
+                        <div className="field full">
+                            <label>Brief of matter</label>
+
+                            <textarea
+                                name="message"
+                                placeholder="Describe what happened, when, and what you're looking to achieve. Include any dates, notices, or filings already in motion."
+                                value={formData.message}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="submit-row">
+                        <span className="note">
+                            By submitting, you agree this does not yet create
+                            an attorney-client relationship.
+                        </span>
+
+                        <button
+                            type="submit"
+                            className="submit-btn"
+                            disabled={loading}
+                        >
+                            {loading ? "Submitting..." : "Submit Brief"}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
     );
 }
-

@@ -157,7 +157,7 @@ export default function AdminQueries() {
                 All Legal Queries
               </h5>
 
-              <span className="badge bg-warning text-dark">
+              <span className="badge bg-warning text-white">
                 {filteredQueries.length} Queries
               </span>
 

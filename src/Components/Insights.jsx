@@ -1,65 +1,114 @@
-import React from 'react'
-import Navbar from './Navbar'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { ARTICLE_API } from "../utils/constant";
+import { Link } from "react-router-dom";
 
 export default function Insights() {
-  return (
-    <>
-     {/* <Navbar/> */}
-    <section className="insights" id="insights">
-                <div className="wrap">
-                    <div className="section-head">
-                        <div className="eyebrow">Insights</div>
-                        <h2>Notes from the practice</h2>
-                        <p>Short reads from our associates on cases, rulings, and procedure worth knowing about — written for clients, not just for counsel. <a
-                            href="blog.html"
+    const [articles, setArticles] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchRandomArticles = async () => {
+        try {
+            const { data } = await axios.get(`${ARTICLE_API}/random`);
+
+            if (data.success) {
+                setArticles(data.articles);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchRandomArticles();
+    }, []);
+
+    return (
+        <section className="insights" id="insights">
+            <div className="wrap">
+                <div className="section-head">
+                    <div className="eyebrow">Insights</div>
+
+                    <h2>Notes from the practice</h2>
+
+                    <p>
+                        Short reads from our associates on cases, rulings, and procedure
+                        worth knowing about — written for clients, not just for counsel.
+                        <a
+                            href="/blog"
                             style={{
                                 color: "var(--seal)",
                                 borderBottom: "1px solid var(--seal-dim)",
+                                marginLeft: "5px",
                             }}
                         >
-                            Read the full blog &rarr;
-                        </a></p>
-                    </div>
-                    <div className="insight-grid">
-                        <article className="insight-card">
-                            <span className="insight-tag">Criminal</span>
-                            <h3>Anticipatory bail: what actually changed in procedure</h3>
-                            <p>A plain-language walkthrough of how courts are applying the revised criminal procedure code to bail applications.</p>
-                            <div className="insight-meta"><span>Art. I</span><span>6 min read</span></div>
-                        </article>
-                        <article className="insight-card">
-                            <span className="insight-tag">Civil</span>
-                            <h3>Injunctions in property disputes: the real standard</h3>
-                            <p>Courts ask three questions before granting a stay. Most petitions fail because they only answer one of them.</p>
-                            <div className="insight-meta"><span>Art. II</span><span>7 min read</span></div>
-                        </article>
-                        <article className="insight-card">
-                            <span className="insight-tag">IP</span>
-                            <h3>Trademark squatting: what founders get wrong</h3>
-                            <p>Filing late is rarely the mistake. Filing in the wrong class, for the wrong goods, is what costs founders their mark.</p>
-                            <div className="insight-meta"><span>Art. III</span><span>5 min read</span></div>
-                        </article>
-                        <article className="insight-card">
-                            <span className="insight-tag">Cyber</span>
-                            <h3>Reporting a data breach: the 72-hour rule</h3>
-                            <p>What has to happen in the first three days after discovery, and who is actually required to be notified.</p>
-                            <div className="insight-meta"><span>Art. IV</span><span>6 min read</span></div>
-                        </article>
-                        <article className="insight-card">
-                            <span className="insight-tag">Taxation</span>
-                            <h3>Faceless assessments: a taxpayer's working guide</h3>
-                            <p>How to respond to a notice under the faceless assessment scheme without a call, a meeting, or a familiar officer.</p>
-                            <div className="insight-meta"><span>Art. V</span><span>8 min read</span></div>
-                        </article>
-                        <article className="insight-card">
-                            <span className="insight-tag">Corporate</span>
-                            <h3>Shareholder agreements that survive a dispute</h3>
-                            <p>The clauses that matter are rarely the ones founders spend the most time negotiating. A drafting checklist.</p>
-                            <div className="insight-meta"><span>Art. VI</span><span>9 min read</span></div>
-                        </article>
-                    </div>
+                            Read the full blog →
+                        </a>
+                    </p>
                 </div>
-            </section>
-    </>
-  )
+
+                {loading ? (
+                    <div
+                        style={{
+                            textAlign: "center",
+                            padding: "50px",
+                        }}
+                    >
+                        <h4>Loading Articles...</h4>
+                    </div>
+                ) : articles.length === 0 ? (
+                    <div
+                        style={{
+                            textAlign: "center",
+                            padding: "50px",
+                        }}
+                    >
+                        <h4>No Articles Available</h4>
+                    </div>
+                ) : (
+                    <div className="insight-grid">
+                        {articles.map((article) => (
+                            <Link
+                                key={article._id}
+                                to={`/article/${article._id}`}
+                                style={{
+                                    textDecoration: "none",
+                                    color: "inherit",
+                                    display: "block",
+                                }}
+                            >
+                                <article className="insight-card">
+                                    <span className="insight-tag">
+                                        {article.category}
+                                    </span>
+
+                                    <h3>{article.title}</h3>
+
+                                    <p>{article.excerpt}</p>
+
+                                    <div className="insight-meta">
+                                        <span>{article.author}</span>
+                                        <span>{article.readTime}</span>
+                                    </div>
+
+                                    <span
+                                        style={{
+                                            marginTop: "18px",
+                                            display: "inline-block",
+                                            color: "#b68d40",
+                                            fontWeight: "600",
+                                        }}
+                                    >
+                                        Read More →
+                                    </span>
+                                </article>
+                            </Link>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </section>
+    );
 }

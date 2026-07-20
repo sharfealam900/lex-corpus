@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   verifyUser,
   createSession,
@@ -8,6 +8,7 @@ import {
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -16,7 +17,7 @@ export default function LoginPage() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] =useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -34,30 +35,42 @@ export default function LoginPage() {
     setError("");
 
     if (!isValidEmail(formData.email)) {
-      return setError("Please enter a valid email address.");
+      setError("Please enter a valid email address.");
+      return;
     }
 
     if (!formData.password) {
-      return setError("Please enter your password.");
+      setError("Please enter your password.");
+      return;
     }
 
     try {
       setLoading(true);
 
+      // Login User
       const user = await verifyUser(
         formData.email,
         formData.password
       );
 
+      // Save Session
       createSession(user);
 
-      navigate("/");
+      // Redirect
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (location.state?.from) {
+        navigate(location.state.from);
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       console.error(err);
 
       setError(
-        err.response?.data?.message ||
-          "Invalid email or password."
+        err?.response?.data?.message ||
+        err?.message ||
+        "Invalid email or password."
       );
     } finally {
       setLoading(false);
@@ -72,45 +85,34 @@ export default function LoginPage() {
 
           <div className="logo-text">
             <div className="name">Lex Corpus</div>
-            <div className="sub">
-              Lawyers & Associates
-            </div>
+            <div className="sub">Lawyers & Associates</div>
           </div>
         </div>
 
         <div className="auth-quote">
-          <div className="eyebrow">
-            Client Portal
-          </div>
+          <div className="eyebrow">Client Portal</div>
 
           <h1>
             Pick up exactly <em>where you left off</em>
           </h1>
 
           <p>
-            Sign in to view your matter status,
-            message your associate and revisit
-            your previous submissions.
+            Sign in to view your matter status, message your associate and
+            revisit your previous submissions.
           </p>
         </div>
       </div>
 
       <div className="auth-form-side">
         <div className="auth-card">
-          <Link
-            to="/"
-            className="back-home"
-          >
+          <Link to="/" className="back-home">
             ← Back to Home
           </Link>
 
           <h2>Sign In</h2>
 
           <p className="lede">
-            New here?{" "}
-            <Link to="/signup">
-              Create an account
-            </Link>
+            New here? <Link to="/signup">Create an account</Link>
           </p>
 
           {error && (
@@ -137,11 +139,7 @@ export default function LoginPage() {
 
               <div className="input-wrap">
                 <input
-                  type={
-                    showPassword
-                      ? "text"
-                      : "password"
-                  }
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
@@ -152,14 +150,10 @@ export default function LoginPage() {
                   type="button"
                   className="toggle-visibility"
                   onClick={() =>
-                    setShowPassword(
-                      !showPassword
-                    )
+                    setShowPassword(!showPassword)
                   }
                 >
-                  {showPassword
-                    ? "Hide"
-                    : "Show"}
+                  {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
             </div>
@@ -172,7 +166,6 @@ export default function LoginPage() {
                   checked={formData.remember}
                   onChange={handleChange}
                 />
-
                 Keep me signed in
               </label>
 
@@ -194,9 +187,7 @@ export default function LoginPage() {
               className="submit-btn"
               disabled={loading}
             >
-              {loading
-                ? "Signing In..."
-                : "Sign In"}
+              {loading ? "Signing In..." : "Sign In"}
             </button>
           </form>
         </div>

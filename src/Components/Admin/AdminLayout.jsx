@@ -16,7 +16,7 @@ export default function AdminLayout({ children }) {
 
       <div
         style={{
-          flex: 1,
+          flex:1,
           display: "flex",
           flexDirection: "column",
         }}
@@ -25,7 +25,7 @@ export default function AdminLayout({ children }) {
 
         <main
           style={{
-            padding: "30px",
+            padding: "50px",
             flex: 1,
           }}
         >

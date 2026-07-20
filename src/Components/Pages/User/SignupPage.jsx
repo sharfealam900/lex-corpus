@@ -76,7 +76,7 @@ export default function SignupPage() {
 
       alert("Account created successfully!");
 
-      navigate("/login");
+      navigate("/home");
     } catch (err) {
       console.error(err);
 

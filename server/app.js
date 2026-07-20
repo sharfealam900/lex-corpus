@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 import authRoute from "./routes/auth.route.js";
 import queryRoute from "./routes/query.route.js";
+import articleRoute from "./routes/article.route.js";
 
 const app = express();
 
@@ -31,5 +32,6 @@ app.get("/test", (req, res) => {
 // Routes
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/query", queryRoute);
+app.use("/api/v1/article", articleRoute);
 
 export default app;
