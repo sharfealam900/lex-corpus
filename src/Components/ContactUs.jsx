@@ -1,261 +1,348 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { getSession } from "../utils/auth";
+import { QUERY_API, SETTING_API } from "../utils/constant";
 
 export default function ContactUs() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
+  const [settings, setSettings] = useState({
+    address: "",
+    phone: "",
+    contactEmail: "",
+    whatsapp: "",
+    googleMap: "",
+  });
+
+  const [formData, setFormData] = useState({
+    fullname: "",
+    phoneNumber: "",
+    email: "",
+    subject: "",
+    practiceArea: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data } = await axios.get(SETTING_API);
+
+      if (data.success) {
+        setSettings(data.settings);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const user = getSession();
+
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Required",
+        text: "Please sign in to submit your legal query.",
+        confirmButtonText: "Go to Login",
+        confirmButtonColor: "#b8860b",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login", {
+            state: {
+              from: "/contactUs",
+            },
+          });
+        }
+      });
+
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const { data } = await axios.post(
+        `${QUERY_API}/create`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+
+      await Swal.fire({
+        icon: "success",
+        title: "Query Submitted Successfully",
+        text: "Redirecting to Home...",
+        timer: 2500,
+        showConfirmButton: false,
+      });
+
+      setFormData({
         fullname: "",
         phoneNumber: "",
         email: "",
         subject: "",
         practiceArea: "",
         message: "",
-    });
+      });
 
-    const [loading, setLoading] = useState(false);
+      navigate("/");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text:
+          error.response?.data?.message ||
+          "Something went wrong.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
+  return (
+    <section className="contact" id="contact">
+      <div className="wrap contact-grid">
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+        {/* Left */}
 
-        // Check login every time user clicks submit
-        const user = getSession();
+        <div className="contact-info">
 
-        if (!user) {
-            Swal.fire({
-                icon: "warning",
-                title: "Login Required",
-                text: "Please sign in to submit your legal query.",
-                confirmButtonText: "Go to Login",
-                confirmButtonColor: "#b8860b",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    navigate("/login", {
-                        state: {
-                            from: "/contactUs",
-                        },
-                    });
-                }
-            });
+          <div className="eyebrow">
+            Get in touch
+          </div>
 
-            return;
-        }
+          <h2>State your matter</h2>
 
-        try {
-            setLoading(true);
+          <p>
+            Tell us briefly what's happened and what you need.
+            An associate from the relevant practice group will
+            review it and respond within one business day.
+          </p>
 
-            const { data } = await axios.post(
-                "http://localhost:8000/api/v1/query/create",
-                formData,
-                {
-                    withCredentials: true,
-                }
-            );
+          <ul className="info-list">
 
-            await Swal.fire({
-                icon: "success",
-                title: "Query Submitted Successfully",
-                text: "Redirecting to Home...",
-                timer: 3000,
-                showConfirmButton: false,
-            });
+            <li>
+              <span className="k">Office</span>
 
-            navigate("/");
+              <span className="v">
+                {settings.address || "Not Available"}
+              </span>
+            </li>
 
-            setFormData({
-                fullname: "",
-                phoneNumber: "",
-                email: "",
-                subject: "",
-                practiceArea: "",
-                message: "",
-            });
-        } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Submission Failed",
-                text:
-                    error.response?.data?.message ||
-                    "Something went wrong.",
-                confirmButtonColor: "#dc3545",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
+            <li>
+              <span className="k">Phone</span>
 
-    return (
-        <section className="contact" id="contact">
-            <div className="wrap contact-grid">
-                <div className="contact-info">
-                    <div className="eyebrow">Get in touch</div>
+              <span className="v">
 
-                    <h2>State your matter</h2>
+                <a href={`tel:${settings.phone}`}>
+                  {settings.phone || "Not Available"}
+                </a>
 
-                    <p>
-                        Tell us briefly what's happened and what you need.
-                        An associate from the relevant practice group will
-                        review it and respond within one business day —
-                        every submission is confidential.
-                    </p>
+                {settings.whatsapp && (
+                  <>
+                    <br />
 
-                    <ul className="info-list">
-                        <li>
-                            <span className="k">Office</span>
+                    <a
+                      href={`https://wa.me/${settings.whatsapp.replace(
+                        /\D/g,
+                        ""
+                      )}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      WhatsApp
+                    </a>
+                  </>
+                )}
 
-                            <span className="v">
-                                4th Floor, Fatima Apartment
-                                <span>Jamia Nagar, New Delhi 110025</span>
-                            </span>
-                        </li>
+              </span>
+            </li>
 
-                        <li>
-                            <span className="k">Phone</span>
+            <li>
+              <span className="k">Email</span>
 
-                            <span className="v">
-                                +91 7834818160
-                                <span>Mon–Sat, 9:30am–10:00pm IST</span>
-                            </span>
-                        </li>
+              <span className="v">
+                <a href={`mailto:${settings.contactEmail}`}>
+                  {settings.contactEmail || "Not Available"}
+                </a>
+              </span>
+            </li>
 
-                        <li>
-                            <span className="k">Email</span>
+            {settings.googleMap && (
+              <li>
+                <span className="k">Location</span>
 
-                            <span className="v">
-                                lexcorpuservice.gmail.com
-                                <span>
-                                    For new matters and general queries
-                                </span>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
+                <span className="v">
+                  <a
+                    href={settings.googleMap}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View on Google Maps
+                  </a>
+                </span>
+              </li>
+            )}
 
-                <form
-                    className="brief-form"
-                    onSubmit={handleSubmit}
-                >
-                    <div className="form-row">
-                        <div className="field">
-                            <label>Full name</label>
+          </ul>
 
-                            <input
-                                type="text"
-                                name="fullname"
-                                placeholder="Your name"
-                                value={formData.fullname}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
+        </div>
 
-                        <div className="field">
-                            <label>Phone number</label>
+        {/* Right Form */}
 
-                            <input
-                                type="tel"
-                                name="phoneNumber"
-                                placeholder="+91 98XXX XXXXX"
-                                value={formData.phoneNumber}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                    </div>
+        <form
+          className="brief-form"
+          onSubmit={handleSubmit}
+        >
 
-                    <div className="form-row">
-                        <div className="field">
-                            <label>Email address</label>
+          <div className="form-row">
 
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="you@email.com"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
+            <div className="field">
+              <label>Full name</label>
 
-                        <div className="field">
-                            <label>Practice area</label>
-
-                            <select
-                                name="practiceArea"
-                                value={formData.practiceArea}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">Select an area</option>
-                                <option>Criminal law</option>
-                                <option>Civil litigation</option>
-                                <option>Intellectual property</option>
-                                <option>Cyber enforcement & data law</option>
-                                <option>Taxation</option>
-                                <option>Corporate & commercial</option>
-                                <option>Matrimonial & family law</option>
-                                <option>Not sure — advise me</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="form-row">
-                        <div className="field full">
-                            <label>Subject</label>
-
-                            <input
-                                type="text"
-                                name="subject"
-                                placeholder="Enter subject"
-                                value={formData.subject}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-row">
-                        <div className="field full">
-                            <label>Brief of matter</label>
-
-                            <textarea
-                                name="message"
-                                placeholder="Describe what happened, when, and what you're looking to achieve. Include any dates, notices, or filings already in motion."
-                                value={formData.message}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="submit-row">
-                        <span className="note">
-                            By submitting, you agree this does not yet create
-                            an attorney-client relationship.
-                        </span>
-
-                        <button
-                            type="submit"
-                            className="submit-btn"
-                            disabled={loading}
-                        >
-                            {loading ? "Submitting..." : "Submit Brief"}
-                        </button>
-                    </div>
-                </form>
+              <input
+                type="text"
+                name="fullname"
+                placeholder="Your name"
+                value={formData.fullname}
+                onChange={handleChange}
+                required
+              />
             </div>
-        </section>
-    );
+
+            <div className="field">
+              <label>Phone Number</label>
+
+              <input
+                type="tel"
+                name="phoneNumber"
+                placeholder="+91 98XXXXXXXX"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+          </div>
+
+          <div className="form-row">
+
+            <div className="field">
+              <label>Email</label>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="field">
+
+              <label>Practice Area</label>
+
+              <select
+                name="practiceArea"
+                value={formData.practiceArea}
+                onChange={handleChange}
+                required
+              >
+                <option value="">
+                  Select Practice Area
+                </option>
+
+                <option>Criminal law</option>
+                <option>Civil litigation</option>
+                <option>Intellectual property</option>
+                <option>Cyber enforcement</option>
+                <option>Taxation</option>
+                <option>Corporate & commercial</option>
+                <option>Matrimonial & family law</option>
+                <option>Not sure — advise me</option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+          <div className="form-row">
+
+            <div className="field full">
+
+              <label>Subject</label>
+
+              <input
+                type="text"
+                name="subject"
+                placeholder="Enter subject"
+                value={formData.subject}
+                onChange={handleChange}
+                required
+              />
+
+            </div>
+
+          </div>
+
+          <div className="form-row">
+
+            <div className="field full">
+
+              <label>Brief of Matter</label>
+
+              <textarea
+                name="message"
+                placeholder="Describe your legal issue..."
+                value={formData.message}
+                onChange={handleChange}
+                required
+              />
+
+            </div>
+
+          </div>
+
+          <div className="submit-row">
+
+            <span className="note">
+              By submitting, you agree this does not yet create an attorney-client relationship.
+            </span>
+
+            <button
+              type="submit"
+              className="submit-btn"
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Submit Brief"}
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+    </section>
+  );
 }

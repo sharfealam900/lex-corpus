@@ -21,6 +21,7 @@
     "@tiptap/starter-kit": "^3.28.0",
     "axios": "^1.18.1",
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "cloudinary": "^2.10.0",
     "lucide-react": "^1.25.0",
     "multer": "^2.2.0",

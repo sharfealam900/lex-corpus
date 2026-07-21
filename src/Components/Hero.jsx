@@ -1,47 +1,75 @@
-import React from 'react'
-import Navbar from './Navbar'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { SETTING_API } from "../utils/constant";
 
 export default function Hero() {
+  const [settings, setSettings] = useState({
+    websiteName: "Lex Corpus",
+    tagline: "Lawyers & Associates",
+    heroTitle: "Every matter argued on its merits",
+    heroSubtitle:
+      "A full-service law firm advising individuals, families, and enterprises across seven areas of practice.",
+    heroButtonText: "State your matter",
+    heroButtonLink: "/contactUs",
+  });
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data } = await axios.get(SETTING_API);
+
+      if (data.success) {
+        setSettings(data.settings);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    
-    <>
-     {/* <Navbar/> */}
-      <section className="hero">
-                <div className="wrap hero-inner">
-                    <div>
-                        <div className="eyebrow">
-                            Lex Corpus — Lawyers &amp; Associates
-                        </div>
+    <section className="hero">
+      <div className="wrap hero-inner">
+        <div>
 
-                        <h1 className="hero-title">
-                            Every matter argued <em>on its merits</em>
-                        </h1>
+          <div className="eyebrow">
+            {settings.websiteName} — {settings.tagline}
+          </div>
 
-                        <p className="hero-lede">
-                            A full-service law firm advising individuals, families, and
-                            enterprises across seven areas of practice — from criminal defence
-                            to corporate advisory. Read our brief before you write yours.
-                        </p>
+          <h1 className="hero-title">
+            {settings.heroTitle}
+          </h1>
 
-                        <div className="hero-actions">
-                            <a href="#contact" className="btn btn-primary">
-                                State your matter
-                            </a>
+          <p className="hero-lede">
+            {settings.heroSubtitle}
+          </p>
 
-                            <a
-                                href="#practice"
-                                className="btn btn-outline"
-                                style={{
-                                    borderColor: "rgba(242,239,230,0.4)",
-                                    color: "var(--cream)",
-                                }}
-                            >
-                                View practice areas
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-    </>
-  )
+          <div className="hero-actions">
+
+            <a
+              href={settings.heroButtonLink || "/contactUs"}
+              className="btn btn-primary"
+            >
+              {settings.heroButtonText || "Book Consultation"}
+            </a>
+
+            <a
+              href="#practice"
+              className="btn btn-outline"
+              style={{
+                borderColor: "rgba(242,239,230,0.4)",
+                color: "var(--cream)",
+              }}
+            >
+              View Practice Areas
+            </a>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
 }

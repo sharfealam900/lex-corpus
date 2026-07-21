@@ -22,11 +22,13 @@ import AdminQueries from "./Components/Pages/AdminQueries";
 import AdminArticles from "./Components/Pages/AdminArticles";
 import CreateArticle from "./Components/Pages/CreateArticle";
 import EditArticle from "./Components/Pages/EditArticle";
+import AdminSettings from "./Components/Pages/AdminSettings";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+
         {/* Public Pages */}
         <Route path="/" element={<Home />} />
         <Route path="/hero" element={<Hero />} />
@@ -34,8 +36,6 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/insights" element={<Insights />} />
         <Route path="/blog" element={<Blog />} />
-
-        {/* NEW ARTICLE DETAILS PAGE */}
         <Route path="/article/:id" element={<ArticleDetails />} />
 
         {/* Authentication */}
@@ -55,7 +55,7 @@ function App() {
           }
         />
 
-        {/* Admin */}
+        {/* Admin Dashboard */}
         <Route
           path="/admin/dashboard"
           element={
@@ -65,6 +65,7 @@ function App() {
           }
         />
 
+        {/* Admin Queries */}
         <Route
           path="/admin/queries"
           element={
@@ -74,6 +75,7 @@ function App() {
           }
         />
 
+        {/* Admin Articles */}
         <Route
           path="/admin/articles"
           element={
@@ -83,6 +85,7 @@ function App() {
           }
         />
 
+        {/* Create Article */}
         <Route
           path="/admin/articles/create"
           element={
@@ -92,7 +95,7 @@ function App() {
           }
         />
 
-        
+        {/* Edit Article */}
         <Route
           path="/admin/articles/edit/:id"
           element={
@@ -101,10 +104,20 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
-       
+
+        {/* Admin Settings */}
+        <Route
+          path="/admin/settings"
+          element={
+            <ProtectedAdminRoute>
+              <AdminSettings />
+            </ProtectedAdminRoute>
+          }
+        />
 
         {/* Invalid Route */}
         <Route path="*" element={<Navigate to="/" replace />} />
+
       </Routes>
     </BrowserRouter>
   );

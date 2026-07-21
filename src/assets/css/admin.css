@@ -523,3 +523,302 @@ td .form-select {
     overflow-x:auto;
 
 }
+
+.settings-page{
+    max-width:1450px;
+    margin:auto;
+}
+
+.settings-header-area{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.settings-title{
+    font-size:34px;
+    font-weight:700;
+    color:#14213d;
+}
+
+.settings-subtitle{
+    color:#777;
+    margin-top:5px;
+}
+
+.settings-save-btn{
+    padding:13px 35px;
+    font-size:17px;
+    font-weight:600;
+    border-radius:12px;
+}
+
+.settings-card{
+
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 10px 35px rgba(0,0,0,.08);
+    margin-bottom:30px;
+
+}
+
+.settings-card-header{
+
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:22px 30px;
+    border-bottom:1px solid #eee;
+
+}
+
+.settings-icon{
+
+    width:60px;
+    height:60px;
+    background:#d4af37;
+    color:#fff;
+    border-radius:16px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:26px;
+
+}
+
+.settings-card-header h4{
+
+    margin:0;
+    font-weight:700;
+
+}
+
+.settings-card-header p{
+
+    margin:0;
+    color:#777;
+
+}
+
+.settings-card-body{
+
+    padding:30px;
+
+}
+
+.settings-card label{
+
+    font-weight:600;
+    margin-bottom:8px;
+
+}
+
+.settings-card .form-control{
+
+    border-radius:12px;
+    height:52px;
+
+}
+
+.settings-card textarea.form-control{
+
+    height:auto;
+
+}
+
+.preview-box{
+
+    margin-top:15px;
+    width:110px;
+    height:110px;
+    border-radius:15px;
+    border:2px dashed #d4af37;
+    overflow:hidden;
+    background:#fafafa;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+
+.preview-box img{
+
+    width:100%;
+    height:100%;
+    object-fit:cover;
+
+}
+
+
+/* Better Inputs */
+
+.settings-card .form-control{
+
+    border:1px solid #dcdcdc;
+    transition:.3s;
+    box-shadow:none;
+
+}
+
+.settings-card .form-control:focus{
+
+    border-color:#d4af37;
+    box-shadow:0 0 0 .25rem rgba(212,175,55,.18);
+
+}
+
+/* Hover */
+
+.settings-card{
+
+    transition:.3s;
+
+}
+
+.settings-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 18px 45px rgba(0,0,0,.10);
+
+}
+
+/* Labels */
+
+.settings-card label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    color:#444;
+
+    font-weight:600;
+
+}
+
+/* Textarea */
+
+.settings-card textarea{
+
+    border-radius:12px;
+
+    padding:14px;
+
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.settings-card-header{
+
+padding:20px;
+
+}
+
+.settings-card-body{
+
+padding:20px;
+
+}
+
+.settings-icon{
+
+width:50px;
+height:50px;
+font-size:22px;
+
+}
+
+}
+
+
+/* Save Button */
+
+.settings-save-btn{
+
+background:linear-gradient(135deg,#d4af37,#f7c948);
+border:none;
+color:white;
+font-size:17px;
+font-weight:700;
+padding:14px 40px;
+border-radius:14px;
+transition:.3s;
+box-shadow:0 12px 30px rgba(212,175,55,.35);
+
+}
+
+.settings-save-btn:hover{
+
+transform:translateY(-4px);
+
+box-shadow:0 20px 40px rgba(212,175,55,.45);
+
+background:linear-gradient(135deg,#b8860b,#d4af37);
+
+}
+
+/* Nice Animation */
+
+.settings-card{
+
+animation:fadeUp .4s ease;
+
+}
+
+@keyframes fadeUp{
+
+from{
+
+opacity:0;
+transform:translateY(25px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+/* Header */
+
+.settings-header-area{
+
+padding-bottom:15px;
+border-bottom:1px solid #ececec;
+margin-bottom:35px;
+
+}
+
+/* Better Textarea */
+
+textarea{
+
+resize:none;
+
+}
+
+/* Better Focus */
+
+.form-control:focus{
+
+transform:scale(1.01);
+
+}
+
+/* Better spacing */
+
+.settings-card-body .row{
+
+margin-top:10px;
+
+}

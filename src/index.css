@@ -1621,3 +1621,70 @@ nav.primary span.active {
 .ProseMirror:focus {
   outline: none;
 }
+
+
+/* ===========================
+   Social Icons
+=========================== */
+
+.social-links{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.social-links a{
+
+    width:52px;
+    height:52px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    color:#fff;
+    background:rgba(255,255,255,.08);
+
+    font-size:24px;
+
+    text-decoration:none;
+
+    transition:all .35s ease;
+
+}
+
+.social-links a:hover{
+
+    transform:translateY(-8px) scale(1.25);
+
+    background:#d4af37;
+
+    color:#fff;
+
+    box-shadow:0 15px 30px rgba(212,175,55,.45);
+
+}
+
+/* Individual Brand Hover Colors */
+
+.social-links .facebook:hover{
+    background:#1877F2;
+}
+
+.social-links .instagram:hover{
+    background:#E1306C;
+}
+
+.social-links .linkedin:hover{
+    background:#0A66C2;
+}
+
+.social-links .twitter:hover{
+    background:#000;
+}
+
+.social-links .youtube:hover{
+    background:#FF0000;
+}
