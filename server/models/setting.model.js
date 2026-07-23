@@ -17,6 +17,53 @@ const settingSchema = new mongoose.Schema(
       default: "",
     },
 
+    aboutTitle: {
+      type: String,
+      default: ""
+    },
+
+    aboutHeading: {
+      type: String,
+      default: ""
+    },
+    aboutDescription: {
+      type: String,
+      default: ""
+    },
+    aboutMission: {
+      type: String,
+      default: ""
+    },
+    aboutVision: {
+      type: String,
+      default: ""
+    },
+    aboutImage: {
+      type: String,
+      default: ""
+    },
+
+    aboutExperience: {
+      type: Number,
+      default: 0,
+    },
+
+    aboutCasesWon: {
+      type: Number,
+      default: 0,
+    },
+
+    aboutHappyClients: {
+      type: Number,
+      default: 0,
+    },
+
+    aboutExpertLawyers: {
+      type: Number,
+      default: 0,
+    },
+
+
     favicon: {
       type: String,
       default: "",

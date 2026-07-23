@@ -104,6 +104,16 @@ export default function AdminSidebar() {
           </NavLink>
 
           <NavLink
+            to="/admin/practice"
+            className={({ isActive }) =>
+              isActive ? "active" : ""
+            }
+          >
+            <Newspaper size={20} />
+            <span>Practice Edit</span>
+          </NavLink>
+
+          <NavLink
             to="/admin/users"
             className={({ isActive }) =>
               isActive ? "active" : ""

@@ -23,6 +23,9 @@ import AdminArticles from "./Components/Pages/AdminArticles";
 import CreateArticle from "./Components/Pages/CreateArticle";
 import EditArticle from "./Components/Pages/EditArticle";
 import AdminSettings from "./Components/Pages/AdminSettings";
+import PracticeManagement from "./Components/Pages/PracticeManagement";
+
+
 
 function App() {
   return (
@@ -113,6 +116,11 @@ function App() {
               <AdminSettings />
             </ProtectedAdminRoute>
           }
+        />
+
+        <Route
+          path="/admin/practice"
+          element={<PracticeManagement/>}
         />
 
         {/* Invalid Route */}

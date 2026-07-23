@@ -9,7 +9,9 @@ import {
   Share2,
   LayoutTemplate,
   Search,
+  Info,
 } from "lucide-react";
+
 
 export default function AdminSettings() {
   const [form, setForm] = useState({
@@ -37,6 +39,23 @@ export default function AdminSettings() {
     metaTitle: "",
     metaDescription: "",
     metaKeywords: "",
+
+
+    aboutTitle: "",
+    aboutHeading: "",
+    aboutDescription: "",
+    aboutMission: "",
+    aboutVision: "",
+    aboutImage: "",
+
+    aboutExperience: 0,
+    aboutCasesWon: 0,
+    aboutHappyClients: 0,
+    aboutExpertLawyers: 0,
+
+
+
+
   });
 
   const [loading, setLoading] = useState(true);
@@ -490,6 +509,182 @@ export default function AdminSettings() {
                     className="form-control"
                     name="heroButtonLink"
                     value={form.heroButtonLink}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* About Page */}
+
+          <div className="settings-card">
+
+            <div className="settings-card-header">
+
+              <div className="settings-icon">
+                <Info size={28} />
+              </div>
+
+              <div>
+                <h4>About Page</h4>
+
+                <p>
+                  Manage your About page content.
+                </p>
+              </div>
+
+            </div>
+
+            <div className="settings-card-body">
+
+              <div className="row">
+
+                <div className="col-lg-12 mb-4">
+
+                  <label>About Title</label>
+
+                  <input
+                    className="form-control"
+                    name="aboutTitle"
+                    value={form.aboutTitle}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+                <div className="col-lg-12 mb-4">
+
+                  <label>About Heading</label>
+
+                  <input
+                    className="form-control"
+                    name="aboutHeading"
+                    value={form.aboutHeading}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+                <div className="col-lg-12 mb-4">
+
+                  <label>About Description</label>
+
+                  <textarea
+                    rows={5}
+                    className="form-control"
+                    name="aboutDescription"
+                    value={form.aboutDescription}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+                <div className="col-lg-6 mb-4">
+
+                  <label>Mission</label>
+
+                  <textarea
+                    rows={4}
+                    className="form-control"
+                    name="aboutMission"
+                    value={form.aboutMission}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+                <div className="col-lg-6 mb-4">
+
+                  <label>Vision</label>
+
+                  <textarea
+                    rows={4}
+                    className="form-control"
+                    name="aboutVision"
+                    value={form.aboutVision}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+                <div className="col-lg-12 mb-4">
+
+                  <label>About Image URL</label>
+
+                  <input
+                    className="form-control"
+                    name="aboutImage"
+                    value={form.aboutImage}
+                    onChange={handleChange}
+                  />
+
+                  {form.aboutImage && (
+                    <div className="preview-box mt-3">
+                      <img
+                        src={form.aboutImage}
+                        alt="About Preview"
+                      />
+                    </div>
+                  )}
+
+                </div>
+
+                <div className="col-lg-3 mb-4">
+
+                  <label>Years of Experience</label>
+
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="aboutExperience"
+                    value={form.aboutExperience}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+                <div className="col-lg-3 mb-4">
+
+                  <label>Cases Won</label>
+
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="aboutCasesWon"
+                    value={form.aboutCasesWon}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+                <div className="col-lg-3 mb-4">
+
+                  <label>Happy Clients</label>
+
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="aboutHappyClients"
+                    value={form.aboutHappyClients}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+                <div className="col-lg-3 mb-4">
+
+                  <label>Expert Lawyers</label>
+
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="aboutExpertLawyers"
+                    value={form.aboutExpertLawyers}
                     onChange={handleChange}
                   />
 

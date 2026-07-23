@@ -18,14 +18,13 @@ const userSchema = new mongoose.Schema(
 
     phoneNumber: {
       type: String,
-      required: true,
+      default: "",
     },
 
     password: {
       type: String,
-      required: true,
+      default: "",
     },
-
     role: {
       type: String,
       enum: ["user", "admin"],
@@ -35,6 +34,17 @@ const userSchema = new mongoose.Schema(
     profileImage: {
       type: String,
       default: "",
+    },
+
+    googleId: {
+      type: String,
+      default: "",
+    },
+
+    provider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
     },
 
     address: {

@@ -28,11 +28,6 @@ const querySchema = new mongoose.Schema(
       required: true,
     },
 
-    practiceArea: {
-      type: String,
-      required: true,
-    },
-
     message: {
       type: String,
       required: true,

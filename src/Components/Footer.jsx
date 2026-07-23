@@ -9,6 +9,7 @@ export default function Footer() {
     tagline: "Lawyers & Associates",
     contactEmail: "",
     phone: "",
+    whatsapp: "",
     address: "",
     facebook: "",
     instagram: "",
@@ -32,9 +33,8 @@ export default function Footer() {
     }
   };
 
-  
-
   return (
+    
     <div className="wrap">
 
       <div className="footer-grid">
@@ -68,6 +68,19 @@ export default function Footer() {
               </a>
             </p>
           )}
+
+          {/* {settings.whatsapp && (
+            <p className="mb-1">
+              <strong>WhatsApp:</strong>{" "}
+              <a
+                href={`https://wa.me/${settings.whatsapp.replace(/\D/g, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {settings.whatsapp}
+              </a>
+            </p>
+          )} */}
 
           {settings.address && (
             <p className="mb-0">

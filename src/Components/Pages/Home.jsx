@@ -95,7 +95,7 @@ export default function Home() {
             </div>
 
             <div id="practice">
-                <Practice />
+                <Practice/>
             </div>
 
             <div id="about">

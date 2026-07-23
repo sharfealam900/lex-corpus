@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import validator from "validator";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 
 // ==========================
 // Register User
@@ -138,6 +139,96 @@ export const loginUser = async (req, res) => {
   }
 };
 
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({
+        success: false,
+        message: "Google credential missing.",
+      });
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    const {
+      sub,
+      email,
+      name,
+      picture,
+      email_verified,
+    } = payload;
+
+    if (!email_verified) {
+      return res.status(400).json({
+        success: false,
+        message: "Google email is not verified.",
+      });
+    }
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        fullname: name,
+        email,
+        phoneNumber: "",
+        password: "",
+        profileImage: picture,
+        googleId: sub,
+        provider: "google",
+        role: "user",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    return res
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: false,
+        maxAge: 24 * 60 * 60 * 1000,
+      })
+      .status(200)
+      .json({
+        success: true,
+        message: "Google login successful.",
+        user: {
+          _id: user._id,
+          fullname: user.fullname,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          role: user.role,
+          profileImage: user.profileImage,
+          address: user.address,
+        },
+      });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Google login failed.",
+    });
+  }
+};
+
 // ==========================
 // Logout User
 // ==========================
@@ -196,3 +287,6 @@ export const getProfile = async (req, res) => {
     });
   }
 };
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+

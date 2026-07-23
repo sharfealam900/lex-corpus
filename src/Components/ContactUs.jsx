@@ -243,49 +243,25 @@ export default function ContactUs() {
 
           </div>
 
-          <div className="form-row">
+         <div className="form-row">
+           <div className="field full">
+            <label>Email</label>
 
-            <div className="field">
-              <label>Email</label>
-
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="field">
-
-              <label>Practice Area</label>
-
-              <select
-                name="practiceArea"
-                value={formData.practiceArea}
-                onChange={handleChange}
-                required
-              >
-                <option value="">
-                  Select Practice Area
-                </option>
-
-                <option>Criminal law</option>
-                <option>Civil litigation</option>
-                <option>Intellectual property</option>
-                <option>Cyber enforcement</option>
-                <option>Taxation</option>
-                <option>Corporate & commercial</option>
-                <option>Matrimonial & family law</option>
-                <option>Not sure — advise me</option>
-
-              </select>
-
-            </div>
-
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              style={{ width: "100%" }}
+            />
           </div>
+
+         </div>
+
+
+
 
           <div className="form-row">
 

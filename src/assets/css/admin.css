@@ -317,7 +317,8 @@
 .card {
   border: none;
   border-radius: 14px;
-  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.07);
+  box-shadow: 0 8px 25px rgba(13, 179, 57, 0.07);
+  margin-top: 50px;
 }
 
 .card-header.bg-dark {
@@ -821,4 +822,200 @@ transform:scale(1.01);
 
 margin-top:10px;
 
+}
+
+/* ===========================
+   Practice Management
+=========================== */
+
+.admin-page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.admin-page h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 30px;
+}
+
+/* ===========================
+   Form
+=========================== */
+
+.practice-form {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 35px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 22px;
+}
+
+.form-group:last-child {
+    grid-column: span 2;
+}
+
+.practice-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.practice-form input,
+.practice-form textarea {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    font-size: 15px;
+    transition: .25s;
+    box-sizing: border-box;
+}
+
+.practice-form textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.practice-form input:focus,
+.practice-form textarea:focus{
+    outline:none;
+    border-color:#c49b3d;
+    box-shadow:0 0 0 4px rgba(196,155,61,.12);
+}
+
+/* Button */
+
+.submit-btn{
+    margin-top:25px;
+    background:#111827;
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:14px 28px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.submit-btn:hover{
+    background:#c49b3d;
+}
+
+/* ===========================
+   Table
+=========================== */
+
+.table-card{
+    background:#fff;
+    border-radius:18px;
+    border:1px solid #e5e7eb;
+    overflow:hidden;
+}
+
+.practice-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.practice-table thead{
+    background:#f8fafc;
+}
+
+.practice-table th{
+    padding:18px 20px;
+    font-size:14px;
+    color:#475569;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.practice-table td{
+    padding:18px 20px;
+    color:#334155;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.practice-table tbody tr{
+    transition:.25s;
+}
+
+.practice-table tbody tr:hover{
+    background:#fafafa;
+}
+
+/* ===========================
+   Action Buttons
+=========================== */
+
+.action-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.edit-btn,
+.delete-btn{
+    border:none;
+    border-radius:10px;
+    padding:10px 18px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.25s;
+}
+
+.edit-btn{
+    background:#eef2ff;
+    color:#4338ca;
+}
+
+.edit-btn:hover{
+    background:#4338ca;
+    color:#fff;
+}
+
+.delete-btn{
+    background:#fef2f2;
+    color:#dc2626;
+    margin-left: 10px;
+}
+
+.delete-btn:hover{
+    background:#dc2626;
+    color:#fff;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    margin-bottom: 25px;
+    background: #111827;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all .3s ease;
+    margin-top:5px ;
+    
+}
+
+.back-btn:hover {
+    background: #b48b31;
+    transform: translateY(-2px);
 }

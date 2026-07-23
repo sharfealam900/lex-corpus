@@ -6,6 +6,7 @@ import authRoute from "./routes/auth.route.js";
 import queryRoute from "./routes/query.route.js";
 import articleRoute from "./routes/article.route.js";
 import settingRoute from "./routes/setting.route.js";
+import practiceRoute from "./routes/practice.route.js";
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api/v1/query", queryRoute);
 app.use("/api/v1/article", articleRoute);
 
 app.use("/api/v1/settings", settingRoute);
+app.use("/api/v1/practice", practiceRoute);
 
 // ==============================
 

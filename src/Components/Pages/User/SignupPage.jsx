@@ -4,7 +4,11 @@ import {
   createUser,
   isStrongPassword,
   isValidEmail,
+  googleLogin,
+  createSession
 } from "../../../utils/auth";
+import { GoogleLogin } from "@react-oauth/google";
+
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -82,7 +86,34 @@ export default function SignupPage() {
 
       setError(
         err.response?.data?.message ||
-          "Registration failed."
+        "Registration failed."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+
+      const user = await googleLogin(
+        credentialResponse.credential
+      );
+
+      createSession(user);
+
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error(err);
+
+      setError(
+        err?.response?.data?.message ||
+        "Google Sign Up failed."
       );
     } finally {
       setLoading(false);
@@ -141,6 +172,37 @@ export default function SignupPage() {
               {error}
             </div>
           )}
+
+          <div
+            style={{
+              marginTop: "20px",
+              marginBottom: "20px",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                setError("Google Sign Up failed.");
+              }}
+              theme="outline"
+              size="large"
+              width="320"
+            />
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <hr style={{ flex: 1 }} />
+            <span style={{ margin: "0 10px", color: "#777" }}>OR</span>
+            <hr style={{ flex: 1 }} />
+          </div>
 
           <form onSubmit={handleSubmit}>
             <div className="field">

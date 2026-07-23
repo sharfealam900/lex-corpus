@@ -6,9 +6,16 @@ import {
   isValidEmail,
 } from "../../../utils/auth";
 
+import { GoogleLogin } from "@react-oauth/google";
+import { googleLogin } from "../../../utils/auth";
+
+
+
+
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  
 
   const [formData, setFormData] = useState({
     email: "",
@@ -19,6 +26,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -74,6 +84,29 @@ export default function LoginPage() {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const user = await googleLogin(
+        credentialResponse.credential
+      );
+
+      createSession(user);
+
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error(err);
+
+      setError(
+        err?.response?.data?.message ||
+        "Google login failed."
+      );
     }
   };
 
@@ -189,6 +222,24 @@ export default function LoginPage() {
             >
               {loading ? "Signing In..." : "Sign In"}
             </button>
+
+            <div
+              style={{
+                marginTop: "20px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => {
+                  setError("Google login failed.");
+                }}
+                theme="outline"
+                size="large"
+                width="320"
+              />
+            </div>
           </form>
         </div>
       </div>

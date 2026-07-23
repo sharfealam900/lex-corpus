@@ -8,7 +8,6 @@ export const createQuery = async (req, res) => {
       email,
       phoneNumber,
       subject,
-      practiceArea,
       message,
     } = req.body;
 
@@ -18,7 +17,6 @@ export const createQuery = async (req, res) => {
       !email ||
       !phoneNumber ||
       !subject ||
-      !practiceArea ||
       !message
     ) {
       return res.status(400).json({
@@ -33,7 +31,6 @@ export const createQuery = async (req, res) => {
       email,
       phoneNumber,
       subject,
-      practiceArea,
       message,
     });
 

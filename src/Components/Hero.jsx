@@ -48,14 +48,8 @@ export default function Hero() {
 
           <div className="hero-actions">
 
-            <a
-              href={settings.heroButtonLink || "/contactUs"}
-              className="btn btn-primary"
-            >
-              {settings.heroButtonText || "Book Consultation"}
-            </a>
-
-            <a
+          <div>
+              <a
               href="#practice"
               className="btn btn-outline"
               style={{
@@ -65,6 +59,7 @@ export default function Hero() {
             >
               View Practice Areas
             </a>
+          </div>
 
           </div>
 

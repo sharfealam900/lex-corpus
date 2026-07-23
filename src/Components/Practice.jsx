@@ -1,11 +1,32 @@
 import React from 'react'
 import Navbar from './Navbar'
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { PRACTICE_API_END_POINT } from "../utils/constant";
 
 export default function Practice() {
-  return (
-   <>
-    {/* <Navbar/> */}
-   <section className="practice" id="practice">
+    const [practices, setPractices] = useState([]);
+    const fetchPractices = async () => {
+        try {
+            const { data } = await axios.get(PRACTICE_API_END_POINT);
+
+            if (data.success) {
+                setPractices(data.practices);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPractices();
+    }, []);
+
+
+    return (
+        <>
+            {/* <Navbar/> */}
+            <section className="practice" id="practice">
                 <div className="wrap">
                     <div className="section-head">
                         <div className="eyebrow">The corpus</div>
@@ -13,7 +34,9 @@ export default function Practice() {
                         <p>Our associates are organised by field, not by seniority — every matter is routed to counsel who practise it daily.</p>
                     </div>
                     <div className="articles">
-                        <div className="article-row">
+
+                        
+                        {/* <div className="article-row">
                             <div className="article-num">I</div>
                             <h3>Criminal law</h3>
                             <p>Defence and representation across criminal proceedings — from the first FIR through trial, bail, and appeal.</p>
@@ -47,10 +70,28 @@ export default function Practice() {
                             <div className="article-num">VII</div>
                             <h3>Matrimonial &amp; family law</h3>
                             <p>Divorce and separation, child custody, maintenance, and negotiated family settlements, handled with discretion.</p>
+                        </div> */}
+
+
+
+                        <div className="articles">
+                            {practices.map((practice, index) => (
+                                <div className="article-row" key={practice._id}>
+                                    <div className="article-num">{index + 1}</div>
+
+                                    <h3>{practice.title}</h3>
+
+                                    <p>{practice.description}</p>
+                                </div>
+                            ))}
                         </div>
+
+
+
+
                     </div>
                 </div>
             </section>
-   </>
-  )
+        </>
+    )
 }
