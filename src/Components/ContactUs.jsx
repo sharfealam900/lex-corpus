@@ -118,7 +118,7 @@ export default function ContactUs() {
   };
 
   return (
-    <section className="contact" id="contact">
+    <section className="contact" id="contactUs">
       <div className="wrap contact-grid">
 
         {/* Left */}

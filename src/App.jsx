@@ -39,91 +39,30 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/insights" element={<Insights />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/contactUs" element={<ContactUs />} />
         <Route path="/article/:id" element={<ArticleDetails />} />
 
         {/* Authentication */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* Contact */}
-        <Route path="/contactUs" element={<ContactUs />} />
+  
+        <Route path="/account" element={<ProtectedRoute> <Account /></ProtectedRoute> }/>
+   
+        <Route path="/admin/dashboard"element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>}/>
 
-        {/* User */}
-        <Route
-          path="/account"
-          element={
-            <ProtectedRoute>
-              <Account />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/admin/queries"element={<ProtectedAdminRoute> <AdminQueries /></ProtectedAdminRoute>}/>
 
-        {/* Admin Dashboard */}
-        <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedAdminRoute>
-              <AdminDashboard />
-            </ProtectedAdminRoute>
-          }
-        />
+        <Route path="/admin/articles"element={<ProtectedAdminRoute><AdminArticles /> </ProtectedAdminRoute>}/>
 
-        {/* Admin Queries */}
-        <Route
-          path="/admin/queries"
-          element={
-            <ProtectedAdminRoute>
-              <AdminQueries />
-            </ProtectedAdminRoute>
-          }
-        />
+        <Route path="/admin/articles/create" element={<ProtectedAdminRoute> <CreateArticle /> </ProtectedAdminRoute> }/>
+     
+        <Route path="/admin/articles/edit/:id" element={ <ProtectedAdminRoute> <EditArticle /> </ProtectedAdminRoute> }/>
 
-        {/* Admin Articles */}
-        <Route
-          path="/admin/articles"
-          element={
-            <ProtectedAdminRoute>
-              <AdminArticles />
-            </ProtectedAdminRoute>
-          }
-        />
+        <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminSettings /></ProtectedAdminRoute>}/>
 
-        {/* Create Article */}
-        <Route
-          path="/admin/articles/create"
-          element={
-            <ProtectedAdminRoute>
-              <CreateArticle />
-            </ProtectedAdminRoute>
-          }
-        />
+        <Route path="/admin/practice" element={<PracticeManagement/>}/>
 
-        {/* Edit Article */}
-        <Route
-          path="/admin/articles/edit/:id"
-          element={
-            <ProtectedAdminRoute>
-              <EditArticle />
-            </ProtectedAdminRoute>
-          }
-        />
-
-        {/* Admin Settings */}
-        <Route
-          path="/admin/settings"
-          element={
-            <ProtectedAdminRoute>
-              <AdminSettings />
-            </ProtectedAdminRoute>
-          }
-        />
-
-        <Route
-          path="/admin/practice"
-          element={<PracticeManagement/>}
-        />
-
-        {/* Invalid Route */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>

@@ -80,7 +80,7 @@ export default function Insights() {
                                 }}
                             >
                                 <article className="insight-card">
-                                    <span className="insight-tag">
+                                    <span className="insight-tag  ">
                                         {article.category}
                                     </span>
 

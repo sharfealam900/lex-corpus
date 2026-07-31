@@ -106,8 +106,11 @@ export default function Home() {
                 <Insights />
             </div>
 
-            <ContactUs />
+            <div id="insights">
+                <ContactUs />
+            </div>
 
+        
             <Footer />
         </>
     );

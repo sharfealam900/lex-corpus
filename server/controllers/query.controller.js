@@ -7,6 +7,7 @@ export const createQuery = async (req, res) => {
       fullname,
       email,
       phoneNumber,
+      practiceArea,
       subject,
       message,
     } = req.body;
@@ -16,6 +17,7 @@ export const createQuery = async (req, res) => {
       !fullname ||
       !email ||
       !phoneNumber ||
+      !practiceArea ||
       !subject ||
       !message
     ) {
@@ -30,6 +32,7 @@ export const createQuery = async (req, res) => {
       fullname,
       email,
       phoneNumber,
+      practiceArea,
       subject,
       message,
     });

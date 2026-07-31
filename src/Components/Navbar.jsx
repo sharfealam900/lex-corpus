@@ -72,7 +72,8 @@ export default function Navbar({ activeSection = "home" }) {
               }}
             />
           ) : (
-            <div className="seal-mark">LC</div>
+            <NavLink to="/" className="seal-mark">LC</NavLink>
+            
           )}
 
           <div className="logo-text">
@@ -91,67 +92,20 @@ export default function Navbar({ activeSection = "home" }) {
 
         <nav className="primary">
 
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              isActive && activeSection === "home"
-                ? "active"
-                : ""
-            }
-          >
-            Home
-          </NavLink>
+          <NavLink to="/" className={({ isActive }) => isActive && activeSection === "home" ? "active" : ""}> Home</NavLink>
 
-          <NavLink to="/blog">
-            Blogs
-          </NavLink>
+          <NavLink to="/blog">Blogs</NavLink>
 
-          <span
-            className={
-              activeSection === "practice"
-                ? "active"
-                : ""
-            }
-            onClick={() =>
-              handleSectionClick("practice")
-            }
-          >
-            Practice
-          </span>
+          <span className={activeSection === "practice" ? "active" : ""} onClick={() => handleSectionClick("practice")}> Practice </span>
 
-          <span
-            className={
-              activeSection === "about"
-                ? "active"
-                : ""
-            }
-            onClick={() =>
-              handleSectionClick("about")
-            }
-          >
-            About
-          </span>
+          <span className={activeSection === "about" ? "active" : ""} onClick={() => handleSectionClick("about")}> About </span>
 
-          <span
-            className={
-              activeSection === "insights"
-                ? "active"
-                : ""
-            }
-            onClick={() =>
-              handleSectionClick("insights")
-            }
-          >
-            Insights
-          </span>
+          <span className={activeSection === "insights" ? "active" : ""} onClick={() => handleSectionClick("insights")}> Insights </span>
 
-          <NavLink to="/contactUs">
-            Contact
-          </NavLink>
+          <span className={activeSection === "contactUs" ? "active" : ""} onClick={() => handleSectionClick("contactUs")}> ContactUs </span>
+
 
         </nav>
-
-        {/* Right Buttons */}
 
         <div className="nav-actions d-flex align-items-center gap-2">
 

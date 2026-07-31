@@ -1,18 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import AdminLayout from "../Admin/AdminLayout";
 import { QUERY_API } from "../../utils/constant";
 
 export default function AdminQueries() {
   const [queries, setQueries] = useState([]);
-  const [filteredQueries, setFilteredQueries] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [search, setSearch] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [practiceFilter, setPracticeFilter] = useState("All");
+
+  const [selectedQuery, setSelectedQuery] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const fetchQueries = async () => {
     try {
+      setLoading(true);
+
       const { data } = await axios.get(
         `${QUERY_API}/all`,
         {
@@ -20,15 +26,17 @@ export default function AdminQueries() {
         }
       );
 
-      setQueries(data.queries || []);
-      setFilteredQueries(data.queries || []);
+      if (data.success) {
+        setQueries(data.queries || []);
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
-      alert(
-        error.response?.data?.message ||
-          "Unable to fetch queries."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Unable to fetch queries.",
+      });
     } finally {
       setLoading(false);
     }
@@ -38,29 +46,9 @@ export default function AdminQueries() {
     fetchQueries();
   }, []);
 
-  useEffect(() => {
-    let result = [...queries];
-
-    if (search.trim()) {
-      result = result.filter((item) =>
-        item.fullname
-          .toLowerCase()
-          .includes(search.toLowerCase())
-      );
-    }
-
-    if (statusFilter !== "All") {
-      result = result.filter(
-        (item) => item.status === statusFilter
-      );
-    }
-
-    setFilteredQueries(result);
-  }, [queries, search, statusFilter]);
-
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(
+      const { data } = await axios.put(
         `${QUERY_API}/${id}/status`,
         { status },
         {
@@ -68,241 +56,600 @@ export default function AdminQueries() {
         }
       );
 
-      fetchQueries();
+      if (data.success) {
+        fetchQueries();
 
-      alert("Status Updated Successfully");
+        Swal.fire({
+          icon: "success",
+          title: "Updated",
+          text: "Status updated successfully.",
+          timer: 1400,
+          showConfirmButton: false,
+        });
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
-      alert(
-        error.response?.data?.message ||
-          "Unable to update status."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error.response?.data?.message ||
+          "Unable to update status.",
+      });
     }
   };
 
+  const practiceAreas = useMemo(() => {
+    return [
+      "All",
+      ...new Set(
+        queries
+          .map((q) => q.practiceArea)
+          .filter(Boolean)
+      ),
+    ];
+  }, [queries]);
+
+  const filteredQueries = useMemo(() => {
+    return queries.filter((query) => {
+      const search = searchTerm.toLowerCase();
+
+      const matchesSearch =
+        query.fullname?.toLowerCase().includes(search) ||
+        query.email?.toLowerCase().includes(search) ||
+        query.subject?.toLowerCase().includes(search);
+
+      const matchesStatus =
+        statusFilter === "All" ||
+        query.status === statusFilter;
+
+      const matchesPractice =
+        practiceFilter === "All" ||
+        query.practiceArea === practiceFilter;
+
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesPractice
+      );
+    });
+  }, [
+    queries,
+    searchTerm,
+    statusFilter,
+    practiceFilter,
+  ]);
+
+  const stats = useMemo(() => {
+    return {
+      total: queries.length,
+
+      pending: queries.filter(
+        (q) => q.status === "Pending"
+      ).length,
+
+      progress: queries.filter(
+        (q) => q.status === "In Progress"
+      ).length,
+
+      resolved: queries.filter(
+        (q) => q.status === "Resolved"
+      ).length,
+    };
+  }, [queries]);
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="loading-wrapper">
+          <div
+            className="spinner-border text-warning"
+            role="status"
+          />
+
+          <p className="mt-3">
+            Loading legal queries...
+          </p>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   return (
     <AdminLayout>
-      <div className="container-fluid px-4 py-4">
 
-        <h2 className="fw-bold mb-4">
-          Legal Queries
-        </h2>
+      <div className="queries-page">
+        {/* ================= Header ================= */}
 
-        <div className="row mb-4">
+        <div className="queries-header">
 
-          <div className="col-lg-6 mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search by client name..."
-              value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
-            />
+          <div className="header-left">
+
+            <span className="page-label">
+              CLIENT MANAGEMENT
+            </span>
+
+            <h2>Legal Queries</h2>
+
+            <p>
+              Manage all client enquiries, monitor their
+              progress, and respond efficiently from one
+              central dashboard.
+            </p>
+
           </div>
 
-          <div className="col-lg-3 mb-3">
-            <select
-              className="form-select"
-              value={statusFilter}
-              onChange={(e) =>
-                setStatusFilter(e.target.value)
-              }
-            >
-              <option value="All">All Status</option>
+          <div className="header-summary">
 
-              <option value="Pending">
-                Pending
-              </option>
+            <div className="summary-item">
+              <h4>{stats.total}</h4>
+              <span>Total</span>
+            </div>
 
-              <option value="In Progress">
-                In Progress
-              </option>
+            <div className="summary-item">
+              <h4>{stats.pending}</h4>
+              <span>Pending</span>
+            </div>
 
-              <option value="Resolved">
-                Resolved
-              </option>
+            <div className="summary-item">
+              <h4>{stats.progress}</h4>
+              <span>Progress</span>
+            </div>
 
-            </select>
+            <div className="summary-item">
+              <h4>{stats.resolved}</h4>
+              <span>Resolved</span>
+            </div>
+
           </div>
 
         </div>
-                {loading ? (
-          <div className="text-center py-5">
-            <div
-              className="spinner-border text-warning"
-              role="status"
-            >
-              <span className="visually-hidden">
-                Loading...
-              </span>
+
+        {/* ================= Statistics ================= */}
+
+        <div className="stats-grid">
+
+          <div className="stats-card">
+
+            <div className="stats-icon total">
+              📋
             </div>
 
-            <p className="mt-3">
-              Loading Legal Queries...
-            </p>
+            <div className="stats-content">
+              <h3>{stats.total}</h3>
+              <p>Total Queries</p>
+            </div>
+
           </div>
-        ) : filteredQueries.length === 0 ? (
-          <div className="alert alert-warning">
-            No Legal Queries Found.
+
+          <div className="stats-card">
+
+            <div className="stats-icon pending">
+              ⏳
+            </div>
+
+            <div className="stats-content">
+              <h3>{stats.pending}</h3>
+              <p>Pending</p>
+            </div>
+
           </div>
-        ) : (
-          <div className="card shadow-sm border-0">
 
-            <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <div className="stats-card">
 
-              <h5 className="mb-0">
-                All Legal Queries
-              </h5>
+            <div className="stats-icon progress">
+              ⚖️
+            </div>
 
-              <span className="badge bg-warning text-white">
-                {filteredQueries.length} Queries
+            <div className="stats-content">
+              <h3>{stats.progress}</h3>
+              <p>In Progress</p>
+            </div>
+
+          </div>
+
+          <div className="stats-card">
+
+            <div className="stats-icon resolved">
+              ✔
+            </div>
+
+            <div className="stats-content">
+              <h3>{stats.resolved}</h3>
+              <p>Resolved</p>
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* ================= Toolbar ================= */}
+
+        <div className="queries-toolbar">
+
+          <div className="search-box">
+
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search client, email or subject..."
+              value={searchTerm}
+              onChange={(e) =>
+                setSearchTerm(e.target.value)
+              }
+            />
+
+          </div>
+
+          <select
+            className="form-select"
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value)
+            }
+          >
+
+            <option value="All">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="In Progress">
+              In Progress
+            </option>
+            <option value="Resolved">
+              Resolved
+            </option>
+
+          </select>
+
+          <select
+            className="form-select"
+            value={practiceFilter}
+            onChange={(e) =>
+              setPracticeFilter(e.target.value)
+            }
+          >
+
+            {practiceAreas.map((area) => (
+              <option
+                key={area}
+                value={area}
+              >
+                {area}
+              </option>
+            ))}
+
+          </select>
+
+          <button
+            className="btn btn-dark"
+            onClick={fetchQueries}
+          >
+            Refresh
+          </button>
+
+        </div>
+
+        {/* ================= Table Card ================= */}
+
+        <div className="queries-card">
+
+          <div className="queries-card-header">
+
+            <div>
+
+              <h4>Recent Client Queries</h4>
+
+              <span>
+                Showing {filteredQueries.length} of{" "}
+                {queries.length} records
               </span>
 
             </div>
 
-            <div className="card-body p-0">
+          </div>
 
-              <div className="table-responsive">
+          <div className="table-responsive">
 
-                <table className="table table-hover table-striped align-middle mb-0">
+            <table className="table queries-table">
 
-                  <thead className="table-dark">
+              <thead>
 
-                    <tr>
+                <tr>
 
-                      <th>#</th>
+                  <th>Client</th>
 
-                      <th style={{ minWidth: "180px" }}>
-                        Client
-                      </th>
+                  <th>Practice Area</th>
 
-                      <th style={{ minWidth: "220px" }}>
-                        Email
-                      </th>
+                  <th>Subject</th>
 
-                      <th style={{ minWidth: "140px" }}>
-                        Phone
-                      </th>
+                  <th>Status</th>
 
-                      <th style={{ minWidth: "180px" }}>
-                        Practice Area
-                      </th>
+                  <th>Date</th>
 
-                      <th style={{ minWidth: "300px" }}>
-                        Subject
-                      </th>
+                  <th>Actions</th>
 
-                      <th style={{ minWidth: "130px" }}>
-                        Status
-                      </th>
+                </tr>
 
-                      <th style={{ minWidth: "120px" }}>
-                        Date
-                      </th>
+              </thead>
 
-                      <th style={{ minWidth: "180px" }}>
-                        Update Status
-                      </th>
+              <tbody>
+                {filteredQueries.length > 0 ? (
+                  filteredQueries.map((query) => (
+                    <tr key={query._id}>
 
-                    </tr>
+                      {/* Client */}
 
-                  </thead>
+                      <td>
 
-                  <tbody>
+                        <div className="client-info">
 
-                    {filteredQueries.map(
-                      (query, index) => (
-                        <tr key={query._id}>
+                          <div className="client-avatar">
+                            {query.fullname?.charAt(0)?.toUpperCase()}
+                          </div>
 
-                          <td>{index + 1}</td>
+                          <div className="client-details">
 
-                          <td className="fw-semibold">
-                            {query.fullname}
-                          </td>
+                            <h6>{query.fullname}</h6>
 
-                          <td>{query.email}</td>
+                            <small>{query.email}</small>
 
-                          <td>{query.phoneNumber}</td>
+                            <span>{query.phoneNumber}</span>
 
-                          <td>
-                            {query.practiceArea}
-                          </td>
+                          </div>
 
-                          <td
-                            style={{
-                              maxWidth: "300px",
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            }}
-                            title={query.subject}
-                          >
-                            {query.subject}
-                          </td>
-                                                    <td>
-                            <span
-                              className={`badge ${
-                                query.status === "Resolved"
-                                  ? "bg-success"
-                                  : query.status === "In Progress"
-                                  ? "bg-warning text-dark"
-                                  : "bg-danger"
-                              }`}
-                            >
-                              {query.status}
-                            </span>
-                          </td>
+                        </div>
 
-                          <td>
+                      </td>
+
+                      {/* Practice */}
+
+                      <td>
+
+                        <span className="practice-badge">
+                          {query.practiceArea || query.subject}
+                        </span>
+
+                      </td>
+
+                  
+                      {/* Subject */}
+
+                      <td>
+
+                        <div className="subject-box">
+
+                          <strong>{query.subject}</strong>
+
+                        </div>
+
+                      </td>
+
+                      {/* Status */}
+
+                      <td>
+
+                        <span
+                          className={`status-pill ${query.status === "Resolved"
+                            ? "resolved"
+                            : query.status === "In Progress"
+                              ? "progress"
+                              : "pending"
+                            }`}
+                        >
+                          {query.status}
+                        </span>
+
+                      </td>
+
+                      {/* Date */}
+
+                      <td>
+
+                        <div className="date-box">
+
+                          <strong>
                             {new Date(
                               query.createdAt
                             ).toLocaleDateString()}
-                          </td>
+                          </strong>
 
-                          <td>
-                            <select
-                              className="form-select"
-                              value={query.status}
-                              onChange={(e) =>
-                                updateStatus(
-                                  query._id,
-                                  e.target.value
-                                )
-                              }
-                            >
-                              <option value="Pending">
-                                Pending
-                              </option>
+                          <small>
+                            {new Date(
+                              query.createdAt
+                            ).toLocaleTimeString()}
+                          </small>
 
-                              <option value="In Progress">
-                                In Progress
-                              </option>
+                        </div>
 
-                              <option value="Resolved">
-                                Resolved
-                              </option>
-                            </select>
-                          </td>
+                      </td>
 
-                        </tr>
-                      )
-                    )}
+                      {/* Actions */}
 
-                  </tbody>
+                      <td>
 
-                </table>
+                        <div className="action-group">
 
-              </div>
+                          <select
+                            className="form-select form-select-sm"
+                            value={query.status}
+                            onChange={(e) =>
+                              updateStatus(
+                                query._id,
+                                e.target.value
+                              )
+                            }
+                          >
 
+                            <option value="Pending">
+                              Pending
+                            </option>
+
+                            <option value="In Progress">
+                              In Progress
+                            </option>
+
+                            <option value="Resolved">
+                              Resolved
+                            </option>
+
+                          </select>
+
+                          <button
+                            className="btn btn-outline-dark btn-sm"
+                            onClick={() => {
+                              setSelectedQuery(query);
+                              setShowModal(true);
+                            }}
+                          >
+                            View
+                          </button>
+                        </div>
+
+                      </td>
+
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+
+                    <td colSpan="6">
+
+                      <div className="empty-state">
+
+                        <div className="empty-icon">
+                          📭
+                        </div>
+
+                        <h4>No Queries Found</h4>
+
+                        <p>
+                          There are no client queries matching
+                          your search criteria.
+                        </p>
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+                )}
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+        {/* ================= Details Modal ================= */}
+
+        {showModal && selectedQuery && (
+  <div className="query-modal-overlay">
+
+
+            <div className="query-modal">
+        
+
+               <div className="query-modal-header">
+
+                  <h4 className="modal-title">
+                    Client Query Details
+                  </h4>
+
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => {
+                      setShowModal(false);
+                      setSelectedQuery(null);
+                    }}
+                  />
+
+                </div>
+
+               <div className="query-modal-body">
+
+                  <div className="detail-grid">
+
+                    <div className="detail-item">
+                      <label>Full Name</label>
+                      <p>{selectedQuery.fullname}</p>
+                    </div>
+
+                    <div className="detail-item">
+                      <label>Email</label>
+                      <p>{selectedQuery.email}</p>
+                    </div>
+
+                    <div className="detail-item">
+                      <label>Phone</label>
+                      <p>{selectedQuery.phoneNumber}</p>
+                    </div>
+
+                    <div className="detail-item">
+                      <label>Practice Area</label>
+                      <p>{selectedQuery.practiceArea}</p>
+                    </div>
+
+                    <div className="detail-item">
+                      <label>Subject</label>
+                      <p>{selectedQuery.subject}</p>
+                    </div>
+
+                    <div className="detail-item">
+                      <label>Status</label>
+
+                      <span
+                        className={`status-pill ${selectedQuery.status === "Resolved"
+                          ? "resolved"
+                          : selectedQuery.status ===
+                            "In Progress"
+                            ? "progress"
+                            : "pending"
+                          }`}
+                      >
+                        {selectedQuery.status}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                  <div className="message-box mt-4">
+
+                    <label>Message</label>
+
+                    <div className="message-content">
+                      {selectedQuery.message}
+                    </div>
+
+                  </div>
+
+                </div>
+
+               <div className="query-modal-footer">
+
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      setShowModal(false);
+                      setSelectedQuery(null);
+                    }}
+                  >
+                    Close
+                  </button>
+
+                </div>
+
+        
             </div>
-
           </div>
         )}
 
       </div>
+
     </AdminLayout>
+
   );
+
 }

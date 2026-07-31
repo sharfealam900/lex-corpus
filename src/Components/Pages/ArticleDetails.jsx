@@ -113,8 +113,8 @@ export default function ArticleDetails() {
             <section className="detail-body">
                 <div className="wrap">
 
-                    <div className="detail-tag">
-                        <span className="insight-tag">
+                    <div className="detail-tag ">
+                        <span className="insight-tag ">
                             {article.category}
                         </span>
                     </div>
