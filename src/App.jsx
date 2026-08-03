@@ -15,7 +15,7 @@ import SignupPage from "./Components/Pages/User/SignupPage";
 
 import Account from "./Components/Pages/Account";
 import ProtectedRoute from "./Components/ProtectedRoute";
-import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import ProtectedAdminRoute from "./Components/ProtectedAdminRoute";
 
 import AdminDashboard from "./Components/Pages/AdminDashboard";
 import AdminQueries from "./Components/Pages/AdminQueries";
