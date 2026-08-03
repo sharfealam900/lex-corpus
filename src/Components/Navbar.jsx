@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { getSession, logout } from "../utils/auth";
@@ -8,6 +9,7 @@ export default function Navbar({ activeSection = "home" }) {
   const navigate = useNavigate();
   const location = useLocation();
   const user = getSession();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [settings, setSettings] = useState({
     websiteName: "Lex Corpus",
@@ -168,7 +170,108 @@ export default function Navbar({ activeSection = "home" }) {
 
         </div>
 
+
+        <button
+  className="menu-btn"
+  onClick={() => setMenuOpen(!menuOpen)}
+>
+  {menuOpen ? <X size={28} /> : <Menu size={28} />}
+</button>
+
       </div>
+      {menuOpen && (
+  <div className="mobile-menu">
+
+    <NavLink to="/" onClick={() => setMenuOpen(false)}>
+      Home
+    </NavLink>
+
+    <NavLink to="/blog" onClick={() => setMenuOpen(false)}>
+      Blogs
+    </NavLink>
+
+    <button
+      className="mobile-link"
+      onClick={() => {
+        handleSectionClick("practice");
+        setMenuOpen(false);
+      }}
+    >
+      Practice
+    </button>
+
+    <button
+      className="mobile-link"
+      onClick={() => {
+        handleSectionClick("about");
+        setMenuOpen(false);
+      }}
+    >
+      About
+    </button>
+
+    <button
+      className="mobile-link"
+      onClick={() => {
+        handleSectionClick("insights");
+        setMenuOpen(false);
+      }}
+    >
+      Insights
+    </button>
+
+    <button
+      className="mobile-link"
+      onClick={() => {
+        handleSectionClick("contactUs");
+        setMenuOpen(false);
+      }}
+    >
+      Contact Us
+    </button>
+
+    <hr />
+
+    {!user ? (
+      <>
+        <NavLink to="/login" onClick={() => setMenuOpen(false)}>
+          Sign In
+        </NavLink>
+
+        <NavLink to="/signup" onClick={() => setMenuOpen(false)}>
+          Sign Up
+        </NavLink>
+
+        <NavLink to="/contactUs" onClick={() => setMenuOpen(false)}>
+          Book Consultation
+        </NavLink>
+      </>
+    ) : (
+      <>
+        <NavLink to="/account" onClick={() => setMenuOpen(false)}>
+          {user.fullname?.split(" ")[0]}
+        </NavLink>
+
+        {user.role === "admin" && (
+          <NavLink
+            to="/admin/dashboard"
+            onClick={() => setMenuOpen(false)}
+          >
+            Admin Dashboard
+          </NavLink>
+        )}
+
+        <button
+          className="mobile-link logout-btn"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
+      </>
+    )}
+
+  </div>
+)}
     </header>
   );
 }
