@@ -262,9 +262,11 @@ export const logoutUser = async (req, res) => {
 // ==========================
 export const getProfile = async (req, res) => {
   try {
-    const userId = req.id;
+    console.log("Searching user:", req.id);
 
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(req.id).select("-password");
+
+    console.log("Found user:", user);
 
     if (!user) {
       return res.status(404).json({
@@ -277,9 +279,8 @@ export const getProfile = async (req, res) => {
       success: true,
       user,
     });
-
   } catch (error) {
-    console.error(error);
+    console.log(error);
 
     return res.status(500).json({
       success: false,
@@ -287,6 +288,5 @@ export const getProfile = async (req, res) => {
     });
   }
 };
-
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
