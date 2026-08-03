@@ -13,6 +13,7 @@ const app = express();
 // ==============================
 // Middlewares
 // ==============================
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -20,9 +21,21 @@ app.use(cookieParser());
 // ==============================
 // CORS
 // ==============================
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.CLIENT_URL,
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -30,6 +43,14 @@ app.use(
 // ==============================
 // Test Route
 // ==============================
+
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "API Running Successfully",
+  });
+});
+
 app.get("/test", (req, res) => {
   res.json({
     success: true,
@@ -38,17 +59,13 @@ app.get("/test", (req, res) => {
 });
 
 // ==============================
-// API Routes
+// Routes
 // ==============================
+
 app.use("/api/v1/auth", authRoute);
-
 app.use("/api/v1/query", queryRoute);
-
 app.use("/api/v1/article", articleRoute);
-
 app.use("/api/v1/settings", settingRoute);
 app.use("/api/v1/practice", practiceRoute);
-
-// ==============================
 
 export default app;

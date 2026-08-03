@@ -12,10 +12,10 @@ mongoose
     console.log("✅ MongoDB Connected");
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.log("❌ MongoDB Connection Error");
-    console.log(err.message);
+    console.error("❌ MongoDB Connection Error");
+    console.error(err.message);
   });
