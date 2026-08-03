@@ -16,7 +16,7 @@ export default function Footer() {
     linkedin: "",
     twitter: "",
   });
-
+// 
   useEffect(() => {
     fetchSettings();
   }, []);
