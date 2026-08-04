@@ -1,25 +1,26 @@
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
-
 const sendEmail = async (to, subject, html) => {
-  return transporter.sendMail({
-    from: `"Lex Corp" <${process.env.EMAIL_USER}>`,
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  await transporter.verify();
+
+  const info = await transporter.sendMail({
+    from: `"Lex Corpus" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html,
   });
+
+  console.log("Email Sent:", info.messageId);
+
+  return info;
 };
 
 export default sendEmail;

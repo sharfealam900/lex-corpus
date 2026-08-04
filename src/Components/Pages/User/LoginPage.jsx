@@ -11,7 +11,6 @@ import { googleLogin } from "../../../utils/auth";
 
 
 
-
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();

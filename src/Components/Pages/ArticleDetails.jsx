@@ -111,7 +111,7 @@ export default function ArticleDetails() {
             </div>
 
             <section className="detail-body">
-                <div className="wrap">
+                <div className="">
 
                     <div className="detail-tag ">
                         <span className="insight-tag ">
@@ -152,7 +152,7 @@ export default function ArticleDetails() {
                     )}
 
                     <div
-                        className="detail-content"
+                        className="article-content"
                         dangerouslySetInnerHTML={{
                             __html: article.content || "",
                         }}

@@ -71,16 +71,13 @@ export const registerUser = async (req, res) => {
 // ==========================
 export const loginUser = async (req, res) => {
   try {
+    console.log("LOGIN BODY:", req.body);
+
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and password are required.",
-      });
-    }
-
     const user = await User.findOne({ email });
+
+    console.log("USER:", user);
 
     if (!user) {
       return res.status(400).json({
@@ -89,7 +86,15 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    console.log("Entered Password:", password);
+    console.log("DB Password:", user.password);
+
+    const isPasswordMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    console.log("Password Match:", isPasswordMatch);
 
     if (!isPasswordMatch) {
       return res.status(400).json({
@@ -111,12 +116,12 @@ export const loginUser = async (req, res) => {
 
     return res
       .status(200)
- .cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  maxAge: 24 * 60 * 60 * 1000,
-})
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000,
+      })
       .json({
         success: true,
         message: "Login successful.",
@@ -236,6 +241,8 @@ export const googleLogin = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   try {
+    console.log("Forgot password API called");
+
     const { email } = req.body;
 
     if (!email) {
@@ -254,7 +261,6 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    // Generate 6-digit OTP
     const otp = crypto.randomInt(100000, 999999).toString();
 
     user.resetOTP = otp;
@@ -264,17 +270,15 @@ export const forgotPassword = async (req, res) => {
 
     const html = `
       <div style="font-family:Arial,sans-serif">
-        <h2>Lex Corp Password Reset</h2>
+        <h2>Lex Corpus Password Reset</h2>
 
         <p>Hello ${user.fullname},</p>
 
-        <p>Your password reset OTP is:</p>
+        <p>Your OTP is:</p>
 
         <h1 style="letter-spacing:5px">${otp}</h1>
 
-        <p>This OTP will expire in 10 minutes.</p>
-
-        <p>If you didn't request this, please ignore this email.</p>
+        <p>This OTP expires in 10 minutes.</p>
       </div>
     `;
 
@@ -290,15 +294,14 @@ export const forgotPassword = async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: error.message,
     });
   }
 };
-
 
 
 
@@ -311,12 +314,12 @@ export const logoutUser = async (req, res) => {
   try {
     return res
       .status(200)
-     .cookie("token", "", {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  expires: new Date(0),
-})
+      .cookie("token", "", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        expires: new Date(0),
+      })
       .json({
         success: true,
         message: "Logged out successfully.",

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { QUERY_API } from "../../utils/constant";
 import AdminLayout from "../Admin/AdminLayout";
+import toast from "react-hot-toast";
 
 export default function AdminDashboard() {
 
@@ -59,7 +60,7 @@ export default function AdminDashboard() {
 
       console.log(error);
 
-      alert(
+      toast.error(
         error.response?.data?.message ||
         "Unable to load dashboard."
       );
@@ -528,10 +529,6 @@ export default function AdminDashboard() {
 
         </div>
 
-        {/* ===========================
-                    PART 1B ENDS HERE
-                    PART 2 STARTS NEXT
-                ============================ */}
 
 
         {/* Website Overview */}
