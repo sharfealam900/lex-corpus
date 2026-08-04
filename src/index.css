@@ -1597,7 +1597,7 @@ a {
 }
 
 .field input {
-  width: 100%;
+
   border: 1px solid rgba(34, 31, 26, 0.25);
   background: #fff;
   padding: 12px 14px;
@@ -1618,7 +1618,7 @@ a {
 }
 
 .field .toggle-visibility {
-  position: absolute;
+ 
   right: 12px;
   background: none;
   border: none;
@@ -1884,7 +1884,7 @@ button.submit-btn:disabled {
   .auth-form-side input,
   .auth-form-side textarea,
   .auth-form-side select {
-    width: 100%;
+    
   }
 
   .auth-form-side button {
@@ -4089,6 +4089,36 @@ section p {
         text-align:center;
         font-size:14px;
         line-height:1.8;
+    }
+
+}
+
+
+
+
+@media (max-width:768px){
+
+    .remember-row{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    .remember{
+        display:flex;
+        align-items:center;
+        gap:10px;
+    }
+
+    .remember label{
+  
+        font-size:15px;
+    }
+
+    .forgot-link{
+        width:100%;
+        text-align:left;
     }
 
 }

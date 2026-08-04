@@ -8,12 +8,14 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 import "./index.css";
 import App from "./App";
+import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GoogleOAuthProvider
-      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
-    >
+      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+            <Toaster position="top-right" reverseOrder={false}/>
+            
       <App />
     </GoogleOAuthProvider>
   </StrictMode>

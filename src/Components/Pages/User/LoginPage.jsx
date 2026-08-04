@@ -15,7 +15,7 @@ import { googleLogin } from "../../../utils/auth";
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
 
   const [formData, setFormData] = useState({
     email: "",
@@ -202,17 +202,13 @@ export default function LoginPage() {
                 Keep me signed in
               </label>
 
-              <button
-                type="button"
-                className="link-btn"
-                onClick={() =>
-                  alert(
-                    "Password reset isn't available yet. Please contact Lex Corpus."
-                  )
-                }
+              <Link
+                to="/forgot-password"
+                className="forgot-link"
               >
                 Forgot Password?
-              </button>
+              </Link>
+
             </div>
 
             <button

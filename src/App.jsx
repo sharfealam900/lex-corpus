@@ -24,6 +24,9 @@ import CreateArticle from "./Components/Pages/CreateArticle";
 import EditArticle from "./Components/Pages/EditArticle";
 import AdminSettings from "./Components/Pages/AdminSettings";
 import PracticeManagement from "./Components/Pages/PracticeManagement";
+import ForgotPassword from "./Components/Pages/User/ForgotPassword";
+import VerifyOtp from "./Components/Pages/User/VerifyOtp";
+import ResetPassword from "./Components/Pages/User/ResetPassword";
 
 
 
@@ -45,6 +48,9 @@ function App() {
         {/* Authentication */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password"element={<ForgotPassword/>}/>
+        <Route path="/verify-otp"element={<VerifyOtp/>}/>
+        <Route path="/reset-password"element={<ResetPassword/>}/>
 
   
         <Route path="/account" element={<ProtectedRoute> <Account /></ProtectedRoute> }/>
