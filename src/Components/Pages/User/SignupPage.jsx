@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  createUser,
   isStrongPassword,
   isValidEmail,
   googleLogin,
   createSession
 } from "../../../utils/auth";
 import { GoogleLogin } from "@react-oauth/google";
+import { AUTH_API } from "../../../utils/constant";
+import axios from "axios";
+import toast from "react-hot-toast";
+
 
 
 export default function SignupPage() {
@@ -71,16 +74,24 @@ export default function SignupPage() {
     try {
       setLoading(true);
 
-      await createUser({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password,
+      const { data } = await axios.post(
+        `${AUTH_API}/send-signup-otp`,
+        {
+          fullname: formData.name,
+          email: formData.email,
+          phoneNumber: formData.phone,
+          password: formData.password,
+        }
+      );
+
+      toast.success(data.message);
+
+      navigate("/verify-signup-otp", {
+        state: {
+          email: formData.email,
+        },
       });
 
-      alert("Account created successfully!");
-
-      navigate("/home");
     } catch (err) {
       console.error(err);
 
@@ -278,9 +289,7 @@ export default function SignupPage() {
               className="submit-btn"
               disabled={loading}
             >
-              {loading
-                ? "Creating..."
-                : "Create Account"}
+              {loading ? "Sending OTP..." : "Create Account"}
             </button>
           </form>
         </div>

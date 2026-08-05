@@ -8,6 +8,7 @@ import {
 
 import { GoogleLogin } from "@react-oauth/google";
 import { googleLogin } from "../../../utils/auth";
+import "../../PageCSS/LoginPage.css";
 
 
 
@@ -181,9 +182,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   className="toggle-visibility"
-                  onClick={() =>
-                    setShowPassword(!showPassword)
-                  }
+                  onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
@@ -218,13 +217,7 @@ export default function LoginPage() {
               {loading ? "Signing In..." : "Sign In"}
             </button>
 
-            <div
-              style={{
-                marginTop: "20px",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
+            <div className="google-login">
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={() => {

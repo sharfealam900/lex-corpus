@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
+import SignupOTP from "../models/signupOtp.model.js";
 
 // ==========================
 // Register User
@@ -515,4 +516,217 @@ export const getProfile = async (req, res) => {
   }
 };
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+
+
+
+export const sendSignupOTP = async (req, res) => {
+  try {
+    const { fullname, email, phoneNumber, password } = req.body;
+
+    if (!fullname || !email || !phoneNumber || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required.",
+      });
+    }
+
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email address.",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already registered.",
+      });
+    }
+
+    // Delete previous OTP if exists
+    await SignupOTP.deleteOne({ email });
+
+    const otp = crypto.randomInt(100000, 999999).toString();
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await SignupOTP.create({
+      fullname,
+      email,
+      phoneNumber,
+      password: hashedPassword,
+      otp,
+      otpExpire: Date.now() + 10 * 60 * 1000,
+    });
+
+    const html = `
+      <div style="font-family:Arial,sans-serif">
+        <h2>Welcome to Lex Corpus</h2>
+
+        <p>Your verification OTP is:</p>
+
+        <h1 style="letter-spacing:5px">${otp}</h1>
+
+        <p>This OTP expires in 10 minutes.</p>
+      </div>
+    `;
+
+    await sendEmail(
+      email,
+      "Verify Your Email",
+      html
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully.",
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+
+  }
+};
+
+
+
+
+export const completeSignup = async (req, res) => {
+
+  try {
+
+    const { email, otp } = req.body;
+
+    const signupData = await SignupOTP.findOne({ email });
+
+    if (!signupData) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP expired. Please register again.",
+      });
+    }
+
+    if (Date.now() > signupData.otpExpire) {
+
+      await SignupOTP.deleteOne({ email });
+
+      return res.status(400).json({
+        success: false,
+        message: "OTP expired.",
+      });
+
+    }
+
+    if (signupData.otp !== otp) {
+
+      return res.status(400).json({
+        success: false,
+        message: "Invalid OTP.",
+      });
+
+    }
+
+    await User.create({
+
+      fullname: signupData.fullname,
+      email: signupData.email,
+      phoneNumber: signupData.phoneNumber,
+      password: signupData.password,
+      role: "user",
+
+    });
+
+    await SignupOTP.deleteOne({ email });
+
+    return res.status(201).json({
+
+      success: true,
+      message: "Account created successfully.",
+
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+
+      success: false,
+      message: "Internal Server Error",
+
+    });
+
+  }
+
+};
+
+
+
+
+export const resendSignupOTP = async (req, res) => {
+  try {
+
+    const { email } = req.body;
+
+    const signup = await SignupOTP.findOne({ email });
+
+    if (!signup) {
+      return res.status(404).json({
+        success: false,
+        message: "Please register again.",
+      });
+    }
+
+    const otp = crypto.randomInt(100000, 999999).toString();
+
+    signup.otp = otp;
+    signup.otpExpire = Date.now() + 10 * 60 * 1000;
+
+    await signup.save();
+
+    const html = `
+      <div style="font-family:Arial,sans-serif">
+        <h2>Lex Corpus</h2>
+
+        <p>Your new verification OTP is:</p>
+
+        <h1 style="letter-spacing:5px">${otp}</h1>
+
+        <p>This OTP expires in 10 minutes.</p>
+      </div>
+    `;
+
+    await sendEmail(
+      email,
+      "Signup Verification OTP",
+      html
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully.",
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      success:false,
+      message:"Internal Server Error",
+    });
+
+  }
+};
+
 

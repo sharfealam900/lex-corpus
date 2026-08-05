@@ -27,6 +27,7 @@ import PracticeManagement from "./Components/Pages/PracticeManagement";
 import ForgotPassword from "./Components/Pages/User/ForgotPassword";
 import VerifyOtp from "./Components/Pages/User/VerifyOtp";
 import ResetPassword from "./Components/Pages/User/ResetPassword";
+import VerifySignupOTP from "./Components/Pages/User/VerifySignupOTP";
 
 
 
@@ -51,6 +52,8 @@ function App() {
         <Route path="/forgot-password"element={<ForgotPassword/>}/>
         <Route path="/verify-otp"element={<VerifyOtp/>}/>
         <Route path="/reset-password"element={<ResetPassword/>}/>
+
+        <Route path="/verify-signup-otp" element={<VerifySignupOTP />}/>
 
   
         <Route path="/account" element={<ProtectedRoute> <Account /></ProtectedRoute> }/>

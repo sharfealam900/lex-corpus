@@ -10,6 +10,9 @@ import {
   forgotPassword,
   verifyOTP,
   resetPassword,
+  sendSignupOTP,
+  completeSignup,
+  resendSignupOTP,
 } from "../controllers/auth.controller.js";
 
 const router = express.Router();
@@ -17,9 +20,15 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/google", googleLogin);
+
+router.post("/send-signup-otp", sendSignupOTP);
+router.post("/complete-signup", completeSignup);
+router.post("/resend-signup-otp",resendSignupOTP);
+
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
+
 
 router.post("/logout", logoutUser);
 

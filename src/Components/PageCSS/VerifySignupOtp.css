@@ -1,0 +1,189 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@400;500;600&display=swap");
+
+.verify-shell{
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:55% 45%;
+}
+
+.verify-brand{
+    background:linear-gradient(145deg,#111723,#1d2737);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#fff;
+    padding:70px;
+}
+
+.brand-content{
+    max-width:500px;
+}
+
+.brand-content h1{
+    font-family:"Cormorant Garamond",serif;
+    font-size:56px;
+    margin-bottom:40px;
+}
+
+.brand-content span{
+    color:#c9a55c;
+    letter-spacing:3px;
+    font-size:13px;
+}
+
+.brand-content h2{
+    font-family:"Cormorant Garamond",serif;
+    font-size:60px;
+    margin:20px 0;
+}
+
+.brand-content p{
+    font-family:Inter;
+    line-height:1.8;
+    color:#d7d7d7;
+}
+
+.verify-side{
+    background:#f7f2e8;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+
+.verify-card{
+    width:100%;
+    max-width:480px;
+    background:#faf6ec;
+    padding:50px;
+    border-radius:22px;
+    box-shadow:0 20px 60px rgba(0,0,0,.08);
+}
+
+.verify-card h1{
+    font-family:"Cormorant Garamond",serif;
+    font-size:52px;
+    margin-bottom:15px;
+}
+
+.verify-card p{
+    color:#666;
+    margin-bottom:10px;
+    font-family:Inter;
+}
+
+.verify-card strong{
+    display:block;
+    color:#31543d;
+    margin-bottom:35px;
+    font-family:Inter;
+}
+
+.otp-wrapper{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    margin-bottom:40px;
+}
+
+.otp-wrapper input{
+    width:58px;
+    height:65px;
+    border:1px solid #d7d2c6;
+    border-radius:14px;
+    text-align:center;
+    font-size:28px;
+    font-weight:700;
+}
+
+.otp-wrapper input:focus{
+    outline:none;
+    border-color:#31543d;
+    box-shadow:0 0 0 4px rgba(49,84,61,.12);
+}
+
+.verify-btn{
+    width:100%;
+    height:58px;
+    background:#31543d;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.verify-btn:hover{
+    background:#243d2d;
+}
+
+.resend{
+    text-align:center;
+    margin-top:28px;
+    font-family:Inter;
+}
+
+.resend-btn{
+    border:none;
+    background:none;
+    color:#31543d;
+    font-weight:600;
+    cursor:pointer;
+}
+
+@media(max-width:992px){
+
+.verify-shell{
+    grid-template-columns:1fr;
+}
+
+.verify-brand{
+    display:none;
+}
+
+.verify-side{
+    padding:20px;
+}
+
+.verify-card{
+    padding:35px 24px;
+}
+
+.verify-card h1{
+    font-size:42px;
+}
+
+.otp-wrapper{
+    gap:8px;
+}
+
+.otp-wrapper input{
+    width:46px;
+    height:54px;
+    font-size:22px;
+}
+
+}
+
+@media(max-width:480px){
+
+.verify-card{
+    padding:28px 20px;
+}
+
+.verify-card h1{
+    font-size:38px;
+}
+
+.otp-wrapper{
+    gap:6px;
+}
+
+.otp-wrapper input{
+    width:42px;
+    height:50px;
+    font-size:20px;
+}
+
+}
