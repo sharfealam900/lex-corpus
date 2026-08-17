@@ -2300,7 +2300,7 @@ form.brief-form {
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 14px;
 }
 
 .field.full {
@@ -4162,4 +4162,1126 @@ section p {
 
 .link-btn:hover{
     text-decoration:underline;
+}
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   FINAL RESPONSIVE NAVBAR FIX
+   ========================================================= */
+
+/* -------------------------
+   Desktop Navbar
+   ------------------------- */
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 40px 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  /*
+     Keep the desktop position exactly as your
+     existing design.
+  */
+  margin-left: -10px;
+}
+
+.seal-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--seal);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: var(--seal);
+
+  flex-shrink: 0;
+}
+
+.logo-text {
+  line-height: 1.15;
+  margin-top: 10px;
+  min-width: 0;
+}
+
+.logo-text .name {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  color: black;
+  white-space: nowrap;
+}
+
+.logo-text .sub {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  color: black;
+}
+
+nav.primary {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+nav.primary a {
+  font-size: 13.5px;
+  color: var(--charcoal-dim);
+  transition: color 0.2s ease;
+}
+
+nav.primary a:hover {
+  color: var(--seal);
+}
+
+nav.primary a.active {
+  color: var(--seal);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin-left: 60px;
+
+  /*
+     Desktop positioning.
+     This is overridden on mobile.
+  */
+  margin-right: -50px;
+}
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+.menu-btn {
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  background: none;
+  border: none;
+  outline: none;
+
+  cursor: pointer;
+
+  color: var(--ink);
+
+  padding: 8px;
+
+  flex-shrink: 0;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+.mobile-link {
+  background: none;
+  border: none;
+
+  text-align: left;
+  cursor: pointer;
+
+  width: 100%;
+}
+
+.logout-btn {
+  color: #d11a2a;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  /* -------------------------
+     Navbar container
+     ------------------------- */
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+
+    padding: 14px 0;
+  }
+
+
+  /* -------------------------
+     IMPORTANT:
+     Remove desktop negative
+     margin from logo
+     ------------------------- */
+
+  .logo {
+    margin-left: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+
+    flex-shrink: 1;
+  }
+
+
+  /* -------------------------
+     Logo circle
+     ------------------------- */
+
+  .seal-mark {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+  }
+
+
+  /* -------------------------
+     Logo text
+     ------------------------- */
+
+  .logo-text {
+    margin-top: 0;
+
+    min-width: 0;
+
+    overflow: hidden;
+  }
+
+  .logo-text .name {
+    font-size: 22px;
+
+    white-space: nowrap;
+  }
+
+
+  /* -------------------------
+     Hide desktop navigation
+     ------------------------- */
+
+  nav.primary,
+  .nav-actions {
+    display: none !important;
+  }
+
+
+  /* -------------------------
+     Hamburger button
+     ------------------------- */
+
+  .menu-btn {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-left: auto;
+
+    padding: 8px;
+
+    flex-shrink: 0;
+  }
+
+
+  /* -------------------------
+     Mobile dropdown
+     ------------------------- */
+
+  .mobile-menu {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+    padding: 20px;
+
+    background: #fff;
+
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .mobile-menu a,
+  .mobile-link {
+    font-size: 16px;
+
+    color: #222;
+
+    text-decoration: none;
+
+    padding: 10px 0;
+  }
+
+  .mobile-menu hr {
+    border: none;
+
+    border-top: 1px solid #ddd;
+  }
+
+
+  /* -------------------------
+     Hide subtitle on mobile
+     ------------------------- */
+
+  .logo-text .sub {
+    display: none;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE DEVICES
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  /* -------------------------
+     Main wrapper
+     ------------------------- */
+
+  .wrap {
+    width: 100%;
+
+    max-width: 100%;
+
+    margin-inline: auto;
+
+    padding-inline: 20px;
+  }
+
+
+  /* -------------------------
+     Navbar
+     ------------------------- */
+
+  .nav-inner {
+    width: 100%;
+
+    padding: 12px 0;
+  }
+
+
+  /* -------------------------
+     Logo
+     ------------------------- */
+
+  .logo {
+    margin-left: 0;
+
+    gap: 9px;
+
+    min-width: 0;
+
+    max-width: calc(100% - 50px);
+  }
+
+
+  /* -------------------------
+     Logo circle
+     ------------------------- */
+
+  .seal-mark {
+    width: 36px;
+    height: 36px;
+
+    min-width: 36px;
+  }
+
+
+  /* -------------------------
+     Logo name
+     ------------------------- */
+
+  .logo-text {
+    min-width: 0;
+
+    overflow: hidden;
+  }
+
+  .logo-text .name {
+    font-size: 21px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: clip;
+  }
+
+
+  /* -------------------------
+     Hamburger
+     ------------------------- */
+
+  .menu-btn {
+    width: 42px;
+    height: 42px;
+
+    padding: 8px;
+
+    margin-left: auto;
+
+    flex-shrink: 0;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .wrap {
+    padding-inline: 16px;
+  }
+
+  .logo {
+    gap: 7px;
+
+    max-width: calc(100% - 45px);
+  }
+
+  .seal-mark {
+    width: 34px;
+    height: 34px;
+
+    min-width: 34px;
+  }
+
+  .logo-text .name {
+    font-size: 19px;
+  }
+
+  .menu-btn {
+    width: 38px;
+    height: 38px;
+
+    padding: 6px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE FOOTER
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .footer {
+    padding: 60px 0 25px;
+  }
+
+  .footer-grid {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 40px;
+  }
+
+  .footer-brand {
+    text-align: center;
+  }
+
+  .footer-brand h3 {
+    font-size: 34px;
+
+    margin-bottom: 15px;
+  }
+
+  .footer-brand p {
+    font-size: 16px;
+
+    line-height: 1.8;
+  }
+
+  .footer-contact {
+    margin-top: 20px;
+  }
+
+  .footer-contact p {
+    margin-bottom: 12px;
+
+    font-size: 16px;
+
+    word-break: break-word;
+  }
+
+  .footer-links {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 35px;
+
+    text-align: center;
+  }
+
+  .footer-links h5 {
+    margin-bottom: 18px;
+
+    font-size: 15px;
+
+    letter-spacing: 1px;
+  }
+
+  .footer-links ul {
+    padding: 0;
+
+    margin: 0;
+
+    list-style: none;
+  }
+
+  .footer-links li {
+    margin-bottom: 14px;
+  }
+
+  .footer-links a {
+    font-size: 17px;
+  }
+
+  .footer-social {
+    justify-content: center;
+
+    gap: 24px;
+
+    margin-top: 10px;
+  }
+
+  .footer-social a {
+    width: 50px;
+    height: 50px;
+
+    font-size: 22px;
+  }
+
+  .footer-bottom {
+    margin-top: 35px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    line-height: 1.8;
+  }
+}
+
+
+/* =========================================================
+   EXTRA RESPONSIVE SAFETY
+   Prevent horizontal overflow
+   ========================================================= */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  max-width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   CONTACT FORM - REDUCE INPUT & FIELD SPACING
+   ========================================================= */
+
+form.brief-form {
+  padding: 34px 32px;
+}
+
+/* Each row */
+form.brief-form .form-row {
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+/* Individual field */
+form.brief-form .field {
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+/* Labels */
+form.brief-form .field label {
+  margin-bottom: 0;
+  line-height: 1.3;
+}
+
+/* Inputs */
+form.brief-form .field input,
+form.brief-form .field select {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+/* Textarea */
+form.brief-form .field textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 16px;
+  box-sizing: border-box;
+}
+
+/* Reduce spacing between full-width fields */
+form.brief-form .field.full {
+  margin-bottom: 14px;
+}
+
+/* Submit section */
+form.brief-form .submit-row {
+  margin-top: 4px;
+}
+
+
+/* =========================================================
+   MOBILE CONTACT FORM
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  section.contact {
+    padding: 60px 0;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  form.brief-form {
+    padding: 26px 20px;
+  }
+
+  form.brief-form .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  form.brief-form .field {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  form.brief-form .field input,
+  form.brief-form .field select {
+    height: 50px;
+  }
+
+  form.brief-form .field textarea {
+    min-height: 120px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  form.brief-form {
+    padding: 24px 18px;
+    border-radius: 8px;
+  }
+
+  form.brief-form .field {
+    margin-bottom: 12px;
+  }
+
+  form.brief-form .field input,
+  form.brief-form .field select {
+    height: 48px;
+    padding: 0 14px;
+  }
+
+  form.brief-form .field textarea {
+    min-height: 110px;
+    padding: 12px 14px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   FINAL ARTICLE MOBILE FIX
+   IMPORTANT: KEEP THIS AT THE VERY END OF CSS
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  /* -----------------------------------------
+     MAIN ARTICLE SECTION
+     ----------------------------------------- */
+
+  section.detail-body {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+
+    padding: 50px 0 70px !important;
+
+    background: var(--paper) !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* -----------------------------------------
+     ACTUAL DIRECT CONTENT CONTAINER
+
+     Your DOM does NOT use .wrap here.
+     ----------------------------------------- */
+
+  section.detail-body > div {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* -----------------------------------------
+     CATEGORY TAG
+     ----------------------------------------- */
+
+  section.detail-body .detail-tag {
+    width: 100% !important;
+
+    margin: 0 0 22px 0 !important;
+
+    padding: 0 !important;
+  }
+
+
+  section.detail-body .detail-tag .insight-tag {
+    display: inline-flex !important;
+
+    width: fit-content !important;
+
+    margin: 0 !important;
+
+    padding: 6px 12px !important;
+
+    font-size: 11px !important;
+    line-height: 1 !important;
+  }
+
+
+  /* -----------------------------------------
+     ARTICLE TITLE
+
+     Remove the old margin-left:20px
+     ----------------------------------------- */
+
+  section.detail-body h1 {
+    width: 100% !important;
+
+    margin: 0 0 22px 0 !important;
+    padding: 0 !important;
+
+    font-family: "Cormorant Garamond", serif !important;
+
+    font-size: 38px !important;
+    line-height: 1.1 !important;
+
+    font-weight: 600 !important;
+
+    letter-spacing: -0.01em !important;
+
+    color: var(--ink) !important;
+
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+  }
+
+
+  /* -----------------------------------------
+     ARTICLE META
+     ----------------------------------------- */
+
+  section.detail-body .detail-meta {
+    width: 100% !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    flex-wrap: wrap !important;
+
+    gap: 8px 16px !important;
+
+    margin: 0 0 32px 0 !important;
+
+    padding: 0 0 22px 0 !important;
+
+    border-bottom: 1px solid rgba(34, 31, 26, 0.12) !important;
+
+    font-size: 12px !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  section.detail-body .detail-meta span {
+    margin-left: 0 !important;
+  }
+
+
+  /* -----------------------------------------
+     EXCERPT / INTRODUCTION
+     ----------------------------------------- */
+
+  section.detail-body .detail-excerpt {
+    width: 100% !important;
+
+    margin: 0 0 30px 0 !important;
+
+    padding: 0 !important;
+
+    font-family: "Cormorant Garamond", serif !important;
+
+    font-size: 21px !important;
+
+    line-height: 1.6 !important;
+
+    font-style: italic !important;
+
+    color: var(--ink) !important;
+
+    text-align: left !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* -----------------------------------------
+     MAIN ARTICLE CONTENT
+
+     VERY IMPORTANT:
+     Your old CSS has display:flex.
+     Change it back to normal block flow.
+     ----------------------------------------- */
+
+  section.detail-body .detail-content {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+
+    font-family: "Inter", sans-serif !important;
+
+    font-size: 16px !important;
+
+    line-height: 1.8 !important;
+
+    color: #333 !important;
+
+    text-align: left !important;
+
+    text-justify: auto !important;
+
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+  }
+
+
+  /* -----------------------------------------
+     ARTICLE PARAGRAPHS
+     ----------------------------------------- */
+
+  section.detail-body .detail-content p {
+    width: 100% !important;
+
+    margin: 0 0 22px 0 !important;
+    padding: 0 !important;
+
+    font-size: 16px !important;
+
+    line-height: 1.8 !important;
+
+    text-align: left !important;
+
+    overflow-wrap: break-word !important;
+  }
+
+
+  /* -----------------------------------------
+     ARTICLE HEADINGS
+     ----------------------------------------- */
+
+  section.detail-body .detail-content h2 {
+    margin: 38px 0 16px 0 !important;
+
+    font-family: "Cormorant Garamond", serif !important;
+
+    font-size: 30px !important;
+
+    line-height: 1.2 !important;
+  }
+
+
+  section.detail-body .detail-content h3 {
+    margin: 32px 0 14px 0 !important;
+
+    font-family: "Cormorant Garamond", serif !important;
+
+    font-size: 24px !important;
+
+    line-height: 1.25 !important;
+  }
+
+
+  /* -----------------------------------------
+     ARTICLE LISTS
+     ----------------------------------------- */
+
+  section.detail-body .detail-content ul,
+  section.detail-body .detail-content ol {
+    margin: 0 0 24px 0 !important;
+
+    padding-left: 22px !important;
+  }
+
+
+  section.detail-body .detail-content li {
+    margin-bottom: 9px !important;
+
+    font-size: 16px !important;
+
+    line-height: 1.75 !important;
+  }
+
+
+  /* -----------------------------------------
+     ARTICLE IMAGES
+     ----------------------------------------- */
+
+  section.detail-body .detail-content img {
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    height: auto !important;
+
+    margin: 25px 0 !important;
+
+    border-radius: 8px !important;
+
+    object-fit: contain !important;
+  }
+
+
+  /* -----------------------------------------
+     BLOCKQUOTE
+     ----------------------------------------- */
+
+  section.detail-body .detail-content blockquote {
+    margin: 30px 0 !important;
+
+    padding: 0 0 0 16px !important;
+
+    border-left: 3px solid var(--bronze) !important;
+
+    font-family: "Cormorant Garamond", serif !important;
+
+    font-size: 21px !important;
+
+    line-height: 1.5 !important;
+
+    text-align: left !important;
+  }
+
+
+  /* -----------------------------------------
+     RELATED ARTICLES
+     ----------------------------------------- */
+
+  section.related-section {
+    width: 100% !important;
+
+    padding: 55px 20px !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  section.related-section .related-title {
+    font-size: 34px !important;
+
+    margin-bottom: 28px !important;
+  }
+
+
+  section.related-section .insight-grid {
+    grid-template-columns: 1fr !important;
+
+    gap: 18px !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  section.detail-body {
+    padding: 45px 0 60px !important;
+  }
+
+
+  section.detail-body > div {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+
+  section.detail-body h1 {
+    font-size: 36px !important;
+
+    line-height: 1.08 !important;
+
+    margin-bottom: 20px !important;
+  }
+
+
+  section.detail-body .detail-meta {
+    gap: 7px 14px !important;
+
+    margin-bottom: 28px !important;
+
+    padding-bottom: 20px !important;
+  }
+
+
+  section.detail-body .detail-excerpt {
+    font-size: 20px !important;
+
+    line-height: 1.6 !important;
+
+    margin-bottom: 28px !important;
+  }
+
+
+  section.detail-body .detail-content {
+    font-size: 16px !important;
+
+    line-height: 1.8 !important;
+  }
+
+
+  section.detail-body .detail-content p {
+    font-size: 16px !important;
+
+    line-height: 1.8 !important;
+
+    margin-bottom: 20px !important;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  section.detail-body > div {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+
+  section.detail-body h1 {
+    font-size: 33px !important;
+  }
+
+
+  section.detail-body .detail-excerpt {
+    font-size: 19px !important;
+  }
 }
