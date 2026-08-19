@@ -209,8 +209,8 @@ export const googleLogin = async (req, res) => {
     return res
       .cookie("token", token, {
         httpOnly: true,
-        sameSite: "strict",
-        secure: false,
+        secure: true,
+        sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
       })
       .status(200)
@@ -722,8 +722,8 @@ export const resendSignupOTP = async (req, res) => {
     console.log(error);
 
     return res.status(500).json({
-      success:false,
-      message:"Internal Server Error",
+      success: false,
+      message: "Internal Server Error",
     });
 
   }
