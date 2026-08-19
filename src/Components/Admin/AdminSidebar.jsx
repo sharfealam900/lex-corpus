@@ -120,7 +120,7 @@ export default function AdminSidebar() {
             }
           >
             <Users size={20} />
-            <span>Users</span>
+            <span>User</span>
           </NavLink>
 
           <NavLink
