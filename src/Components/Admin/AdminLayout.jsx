@@ -5,33 +5,20 @@ import AdminNavbar from "./AdminNavbar";
 
 export default function AdminLayout({ children }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        background: "#f4f6f9",
-      }}
-    >
+    <div className="admin-layout">
+
       <AdminSidebar />
 
-      <div
-        style={{
-          flex:1,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <div className="admin-content">
+
         <AdminNavbar />
 
-        <main
-          style={{
-            padding: "50px",
-            flex: 1,
-          }}
-        >
+        <main className="admin-main">
           {children}
         </main>
+
       </div>
+
     </div>
   );
 }

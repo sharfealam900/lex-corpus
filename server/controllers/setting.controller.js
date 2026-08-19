@@ -1,8 +1,7 @@
 import Setting from "../models/setting.model.js";
 
-// ==============================
+ 
 // Get Website Settings
-// ==============================
 export const getSettings = async (req, res) => {
   try {
     let settings = await Setting.findOne();
@@ -25,9 +24,9 @@ export const getSettings = async (req, res) => {
   }
 };
 
-// ==============================
+ 
 // Update Website Settings
-// ==============================
+ 
 export const updateSettings = async (req, res) => {
   try {
     let settings = await Setting.findOne();

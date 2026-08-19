@@ -193,8 +193,6 @@ export default function CreateArticle() {
                             </div>
 
                             {/* Content */}
-                            {/* Content */}
-
                             <div className="mb-4">
                                 <label className="form-label fw-semibold">
                                     Content <span className="text-danger">*</span>

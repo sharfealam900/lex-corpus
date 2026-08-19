@@ -7,9 +7,8 @@ import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
 import SignupOTP from "../models/signupOtp.model.js";
 
-// ==========================
+
 // Register User
-// ==========================
 export const registerUser = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password } = req.body;
@@ -67,9 +66,9 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// ==========================
+
 // Login User
-// ==========================
+
 export const loginUser = async (req, res) => {
   try {
     console.log("LOGIN BODY:", req.body);
@@ -308,9 +307,9 @@ export const forgotPassword = async (req, res) => {
 
 
 
-// ==========================
+
 // Logout User
-// ==========================
+
 export const logoutUser = async (req, res) => {
   try {
     return res
@@ -484,9 +483,9 @@ export const resetPassword = async (req, res) => {
 
 
 
-// ==========================
+
 // Get Logged-in User Profile
-// ==========================
+
 export const getProfile = async (req, res) => {
   try {
     console.log("Searching user:", req.id);

@@ -10,18 +10,14 @@ import practiceRoute from "./routes/practice.route.js";
 
 const app = express();
 
-// ==============================
-// Middlewares
-// ==============================
 
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ==============================
-// CORS
-// ==============================
 
+// CORS
 const allowedOrigins = [
   "http://localhost:5173",
   "https://lex-corpus.vercel.app",
@@ -40,10 +36,8 @@ app.use(
   })
 );
 
-// ==============================
-// Test Route
-// ==============================
 
+// Test Route
 app.get("/", (req, res) => {
   res.json({
     success: true,
@@ -58,10 +52,8 @@ app.get("/test", (req, res) => {
   });
 });
 
-// ==============================
-// Routes
-// ==============================
 
+// Routes
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/query", queryRoute);
 app.use("/api/v1/article", articleRoute);

@@ -2555,3 +2555,843 @@ textarea {
   }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   LEX CORPUS
+   ADMIN LAYOUT + MOBILE RESPONSIVE
+   ========================================================= */
+
+/* -----------------------------------------
+   MAIN ADMIN LAYOUT
+----------------------------------------- */
+
+.admin-layout {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+
+  background: #f4f6f9;
+}
+
+.admin-content {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-main {
+  min-width: 0;
+  flex: 1;
+
+  padding: 0;
+
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   DESKTOP DASHBOARD
+   ========================================================= */
+
+.dashboard-wrapper {
+  width: 100%;
+  min-width: 0;
+
+  padding: 35px;
+
+  background: #f6f3ec;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  /* -----------------------------------------
+     PAGE
+  ----------------------------------------- */
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-width: 0;
+
+    margin: 0;
+    padding: 0;
+
+    overflow-x: hidden;
+  }
+
+
+  /* -----------------------------------------
+     MAIN LAYOUT
+  ----------------------------------------- */
+
+  .admin-layout {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+
+    overflow-x: hidden;
+  }
+
+
+  /* -----------------------------------------
+     SIDEBAR
+     
+     Keep sidebar as a compact icon rail.
+     This is much better than completely
+     removing the navigation.
+  ----------------------------------------- */
+
+  .admin-sidebar {
+    width: 68px !important;
+    min-width: 68px !important;
+
+    height: 100vh;
+
+    position: sticky;
+    top: 0;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    z-index: 1000;
+  }
+
+
+  /* -----------------------------------------
+     SIDEBAR LOGO
+  ----------------------------------------- */
+
+  .admin-logo {
+    height: 82px;
+
+    padding: 18px 4px !important;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+  }
+
+  .admin-logo svg {
+    width: 28px !important;
+    height: 28px !important;
+
+    margin: 0 !important;
+  }
+
+  .admin-logo h4,
+  .admin-logo small,
+  .admin-logo p {
+    display: none !important;
+  }
+
+
+  /* -----------------------------------------
+     SIDEBAR MENU
+  ----------------------------------------- */
+
+  .admin-menu {
+    padding: 18px 7px !important;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .admin-menu a {
+    width: 54px;
+
+    height: 52px;
+
+    margin: 0 auto 9px;
+
+    padding: 0 !important;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 12px;
+
+    gap: 0 !important;
+  }
+
+  .admin-menu a span {
+    display: none !important;
+  }
+
+  .admin-menu a svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .admin-menu a:hover {
+    transform: none;
+  }
+
+
+  /* -----------------------------------------
+     LOGOUT
+  ----------------------------------------- */
+
+  .admin-footer {
+    padding: 10px 7px !important;
+  }
+
+  .admin-footer button {
+    width: 54px !important;
+    height: 48px;
+
+    padding: 0 !important;
+
+    margin: auto;
+
+    display: flex !important;
+
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 11px;
+  }
+
+  .admin-footer button span {
+    display: none;
+  }
+
+
+  /* -----------------------------------------
+     CONTENT
+  ----------------------------------------- */
+
+  .admin-content {
+    width: calc(100% - 68px);
+
+    min-width: 0;
+    max-width: calc(100% - 68px);
+  }
+
+  .admin-main {
+    width: 100%;
+    min-width: 0;
+
+    padding: 0 !important;
+
+    overflow-x: hidden;
+  }
+
+
+  /* -----------------------------------------
+     NAVBAR
+  ----------------------------------------- */
+
+  .admin-navbar {
+    width: 100%;
+
+    height: 64px;
+
+    padding: 0 14px !important;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 900;
+  }
+
+  .admin-navbar-title h5 {
+    font-size: 14px;
+  }
+
+  .admin-navbar-title small {
+    font-size: 10px;
+  }
+
+  .admin-navbar-right {
+    gap: 8px;
+  }
+
+  .admin-profile {
+    gap: 6px !important;
+  }
+
+  .admin-profile > svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .admin-profile-info h6 {
+    font-size: 12px;
+  }
+
+  .admin-profile-info span {
+    font-size: 10px;
+  }
+
+
+  /* -----------------------------------------
+     DASHBOARD WRAPPER
+  ----------------------------------------- */
+
+  .dashboard-wrapper {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    padding: 22px 14px 40px !important;
+
+    overflow-x: hidden;
+  }
+
+
+  /* -----------------------------------------
+     DASHBOARD HEADER
+  ----------------------------------------- */
+
+  .dashboard-header {
+    width: 100%;
+
+    margin-bottom: 22px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 18px;
+  }
+
+  .dashboard-label {
+    font-size: 10px;
+
+    letter-spacing: 2.5px;
+
+    margin-bottom: 8px;
+  }
+
+  .dashboard-header h1 {
+    max-width: 100%;
+
+    margin: 0 0 10px;
+
+    font-size: 35px !important;
+
+    line-height: 1.05;
+
+    word-break: normal;
+  }
+
+  .dashboard-header p {
+    max-width: 100%;
+
+    margin: 0;
+
+    font-size: 14px;
+
+    line-height: 1.55;
+  }
+
+
+  /* -----------------------------------------
+     DATE
+  ----------------------------------------- */
+
+  .dashboard-date {
+    width: 100%;
+
+    min-height: 50px;
+
+    padding: 12px 16px;
+
+    justify-content: flex-start;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+  }
+
+
+  /* =====================================================
+     STATISTICS
+     ===================================================== */
+
+  .dashboard-wrapper > .row.g-4 {
+
+    width: 100%;
+
+    display: grid !important;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+
+    gap: 12px !important;
+
+    margin: 0 !important;
+  }
+
+
+  /* Bootstrap columns */
+
+  .dashboard-wrapper > .row.g-4 > [class*="col-"] {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    padding: 0 !important;
+
+    margin: 0 !important;
+
+    flex: none !important;
+  }
+
+
+  /* -----------------------------------------
+     DASHBOARD CARD
+  ----------------------------------------- */
+
+  .dashboard-card {
+
+    width: 100%;
+
+    min-width: 0;
+
+    height: 150px !important;
+
+    padding: 16px 12px !important;
+
+    gap: 10px !important;
+
+    border-radius: 16px;
+
+    align-items: center;
+
+    overflow: hidden;
+  }
+
+  .dashboard-card:hover {
+    transform: none;
+  }
+
+
+  /* -----------------------------------------
+     CARD ICON
+  ----------------------------------------- */
+
+  .card-icon {
+
+    width: 48px !important;
+    min-width: 48px !important;
+
+    height: 48px !important;
+
+    border-radius: 13px;
+
+    font-size: 20px;
+  }
+
+
+  /* -----------------------------------------
+     CARD TEXT
+  ----------------------------------------- */
+
+  .dashboard-card > div:last-child {
+
+    min-width: 0;
+  }
+
+  .dashboard-card > div:last-child span {
+
+    display: block;
+
+    font-size: 12px;
+
+    line-height: 1.2;
+
+    white-space: normal;
+
+    letter-spacing: 0;
+  }
+
+  .dashboard-card > div:last-child h2 {
+
+    margin: 5px 0;
+
+    font-size: 27px;
+
+    line-height: 1;
+  }
+
+  .dashboard-card > div:last-child small {
+
+    display: block;
+
+    font-size: 10px;
+
+    line-height: 1.3;
+  }
+
+
+  /* =====================================================
+     LOWER CONTENT
+     ===================================================== */
+
+  .dashboard-wrapper > .row.mt-5 {
+
+    margin-top: 24px !important;
+
+    width: 100%;
+
+    min-width: 0;
+  }
+
+  .dashboard-wrapper > .row.mt-5 > [class*="col-"] {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    padding: 0 !important;
+
+    margin-bottom: 20px;
+  }
+
+
+  /* -----------------------------------------
+     PANELS
+  ----------------------------------------- */
+
+  .dashboard-panel {
+
+    width: 100%;
+
+    min-width: 0;
+
+    padding: 18px !important;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+  }
+
+
+  /* -----------------------------------------
+     PANEL HEADER
+  ----------------------------------------- */
+
+  .panel-header {
+
+    width: 100%;
+
+    margin-bottom: 18px;
+
+    gap: 12px;
+  }
+
+  .panel-header h3 {
+
+    margin: 0 0 4px;
+
+    font-size: 25px !important;
+
+    line-height: 1.15;
+  }
+
+  .panel-header p {
+
+    font-size: 12px;
+
+    line-height: 1.45;
+  }
+
+  .panel-header .btn {
+
+    width: auto;
+
+    padding: 9px 15px;
+
+    font-size: 12px;
+  }
+
+
+  /* -----------------------------------------
+     TABLE
+  ----------------------------------------- */
+
+  .dashboard-panel .table-responsive {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dashboard-table {
+
+    min-width: 650px !important;
+
+    margin: 0 !important;
+  }
+
+  .dashboard-table th {
+
+    padding: 12px 10px;
+
+    font-size: 10px;
+  }
+
+  .dashboard-table td {
+
+    padding: 12px 10px;
+
+    font-size: 12px;
+  }
+
+
+  /* -----------------------------------------
+     QUICK ACTIONS
+  ----------------------------------------- */
+
+  .quick-actions {
+
+    width: 100%;
+
+    gap: 10px;
+  }
+
+  .action-card {
+
+    width: 100%;
+
+    min-height: 58px;
+
+    padding: 15px !important;
+
+    gap: 13px;
+
+    border-radius: 13px;
+  }
+
+  .action-card:hover {
+
+    transform: none;
+  }
+
+  .action-card i {
+
+    font-size: 20px;
+  }
+
+  .action-card span {
+
+    font-size: 13px;
+  }
+
+
+  /* -----------------------------------------
+     WEBSITE OVERVIEW
+  ----------------------------------------- */
+
+  .overview-grid {
+
+    width: 100%;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+  }
+
+  .overview-card {
+
+    padding: 18px 10px;
+
+    border-radius: 14px;
+  }
+
+  .overview-card i {
+
+    font-size: 25px;
+
+    margin-bottom: 8px;
+  }
+
+  .overview-card h4 {
+
+    font-size: 12px;
+
+    margin-bottom: 8px;
+  }
+
+  .overview-card span {
+
+    font-size: 30px;
+  }
+
+
+  /* -----------------------------------------
+     ACTIVITY
+  ----------------------------------------- */
+
+  .activity-list {
+
+    gap: 16px;
+  }
+
+  .activity-item {
+
+    gap: 11px;
+  }
+
+  .activity-item h6 {
+
+    font-size: 13px;
+  }
+
+  .activity-item small {
+
+    font-size: 11px;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+  .admin-sidebar {
+
+    width: 62px !important;
+    min-width: 62px !important;
+  }
+
+  .admin-content {
+
+    width: calc(100% - 62px);
+
+    max-width: calc(100% - 62px);
+  }
+
+  .admin-menu a {
+
+    width: 48px;
+    height: 48px;
+  }
+
+  .admin-footer button {
+
+    width: 48px !important;
+  }
+
+  .dashboard-wrapper {
+
+    padding: 18px 10px 35px !important;
+  }
+
+  .dashboard-wrapper > .row.g-4 {
+
+    gap: 9px !important;
+  }
+
+  .dashboard-card {
+
+    height: 140px !important;
+
+    padding: 12px 9px !important;
+
+    gap: 7px !important;
+  }
+
+  .card-icon {
+
+    width: 43px !important;
+    min-width: 43px !important;
+
+    height: 43px !important;
+
+    font-size: 18px;
+  }
+
+  .dashboard-card > div:last-child span {
+
+    font-size: 11px;
+  }
+
+  .dashboard-card > div:last-child h2 {
+
+    font-size: 24px;
+  }
+
+  .dashboard-card > div:last-child small {
+
+    font-size: 9px;
+  }
+
+  .dashboard-header h1 {
+
+    font-size: 31px !important;
+  }
+
+  .panel-header h3 {
+
+    font-size: 23px !important;
+  }
+
+}
+
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width: 769px) {
+
+  .admin-layout {
+    display: flex;
+  }
+
+  .admin-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .admin-main {
+    padding: 0;
+  }
+
+}

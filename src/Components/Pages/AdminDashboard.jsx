@@ -464,7 +464,7 @@ export default function AdminDashboard() {
                 <button
                   className="action-card"
                   onClick={() =>
-                    navigate("/admin/blog/create")
+                    navigate("/admin/articles/create")
                   }
                 >
 
@@ -494,7 +494,7 @@ export default function AdminDashboard() {
                 <button
                   className="action-card"
                   onClick={() =>
-                    navigate("/admin/practices")
+                    navigate("/admin/practice")
                   }
                 >
 

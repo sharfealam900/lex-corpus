@@ -90,8 +90,6 @@ export default function VerifySignupOtp() {
 
 
 
-
-
     const resendOTP = async () => {
         try {
             const { data } = await axios.post(

@@ -3,9 +3,6 @@ import cloudinary from "../config/cloudinary.js";
 import streamifier from "streamifier";
 
 
-// =============================
-// Upload Article Image
-// =============================
 export const uploadArticleImage = async (req, res) => {
   try {
     if (!req.file) {
@@ -55,9 +52,7 @@ export const uploadArticleImage = async (req, res) => {
 
 
 
-// =============================
-// Create Article
-// =============================
+
 export const createArticle = async (req, res) => {
   try {
     const {
@@ -104,9 +99,7 @@ export const createArticle = async (req, res) => {
   }
 };
 
-// =============================
-// Get All Published Articles
-// =============================
+
 export const getAllArticles = async (req, res) => {
   try {
     const articles = await Article.find({
@@ -128,9 +121,7 @@ export const getAllArticles = async (req, res) => {
   }
 };
 
-// =============================
-// Get 6 Random Articles
-// =============================
+
 export const getRandomArticles = async (req, res) => {
   try {
     const articles = await Article.aggregate([
@@ -161,9 +152,7 @@ export const getRandomArticles = async (req, res) => {
   }
 };
 
-// =============================
-// Get Single Article
-// =============================
+
 export const getArticleById = async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
@@ -189,9 +178,9 @@ export const getArticleById = async (req, res) => {
   }
 };
 
-// =============================
-// Update Article
-// =============================
+
+
+
 export const updateArticle = async (req, res) => {
   try {
     const article = await Article.findByIdAndUpdate(
@@ -225,9 +214,7 @@ export const updateArticle = async (req, res) => {
   }
 };
 
-// =============================
-// Delete Article
-// =============================
+
 export const deleteArticle = async (req, res) => {
   try {
     const article = await Article.findByIdAndDelete(
