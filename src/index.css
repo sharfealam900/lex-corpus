@@ -615,10 +615,7 @@ footer {
   font-family: 'IBM Plex Mono', monospace;
 }
 
-@media (max-width:992px) {
-
-  .container,
-
+@media (max-width: 992px) {
 
   nav.primary {
     display: none;
@@ -1325,10 +1322,7 @@ footer {
   font-family: 'IBM Plex Mono', monospace;
 }
 
-@media (max-width:992px) {
-
-  .container,
-
+@media (max-width: 992px) {
 
   nav.primary {
     display: none;
