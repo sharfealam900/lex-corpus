@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import {
+  NavLink,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import axios from "axios";
+
 import { getSession, logout } from "../utils/auth";
 import { SETTING_API } from "../utils/constant";
 
 export default function Navbar({ activeSection = "home" }) {
   const navigate = useNavigate();
   const location = useLocation();
+
   const user = getSession();
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [settings, setSettings] = useState({
@@ -17,119 +24,299 @@ export default function Navbar({ activeSection = "home" }) {
     logo: "",
   });
 
+  /*
+   * -------------------------------------------------------
+   * FETCH WEBSITE SETTINGS
+   * -------------------------------------------------------
+   */
+
   useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data } = await axios.get(SETTING_API);
+
+        if (data?.success && data?.settings) {
+          setSettings(data.settings);
+        }
+      } catch (error) {
+        console.error("Navbar settings error:", error);
+      }
+    };
+
     fetchSettings();
   }, []);
 
-  const fetchSettings = async () => {
-    try {
-      const { data } = await axios.get(SETTING_API);
+  /*
+   * -------------------------------------------------------
+   * CLOSE MOBILE MENU WHEN ROUTE CHANGES
+   * -------------------------------------------------------
+   */
 
-      if (data.success) {
-        setSettings(data.settings);
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  /*
+   * -------------------------------------------------------
+   * ESC KEY
+   * -------------------------------------------------------
+   */
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
       }
-    } catch (error) {
-      console.log(error);
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  /*
+   * -------------------------------------------------------
+   * PREVENT BODY SCROLL WHEN MOBILE MENU IS OPEN
+   * -------------------------------------------------------
+   */
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.classList.add("mobile-menu-open");
+    } else {
+      document.body.classList.remove("mobile-menu-open");
     }
-  };
+
+    return () => {
+      document.body.classList.remove("mobile-menu-open");
+    };
+  }, [menuOpen]);
+
+  /*
+   * -------------------------------------------------------
+   * LOGOUT
+   * -------------------------------------------------------
+   */
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/");
-    window.location.reload();
+    try {
+      setMenuOpen(false);
+
+      await logout();
+
+      navigate("/");
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
+  /*
+   * -------------------------------------------------------
+   * SECTION NAVIGATION
+   * -------------------------------------------------------
+   */
+
   const handleSectionClick = (section) => {
+    setMenuOpen(false);
+
     if (location.pathname === "/") {
-      document.getElementById(section)?.scrollIntoView({
-        behavior: "smooth",
-      });
-    } else {
-      navigate("/", {
-        state: {
-          scrollTo: section,
-        },
-      });
+      const element = document.getElementById(section);
+
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
+      return;
     }
+
+    navigate("/", {
+      state: {
+        scrollTo: section,
+      },
+    });
+  };
+
+  /*
+   * -------------------------------------------------------
+   * ACTIVE SECTION
+   * -------------------------------------------------------
+   */
+
+  const isSectionActive = (section) => {
+    return activeSection === section;
+  };
+
+  /*
+   * -------------------------------------------------------
+   * DESKTOP NAVIGATION LINK
+   * -------------------------------------------------------
+   */
+
+  const desktopNavLinkClass = ({ isActive }) => {
+    return `lc-nav-link ${
+      isActive && location.pathname === "/"
+        ? "is-active"
+        : ""
+    }`;
   };
 
   return (
-    <header className="header">
-      <div className="wrap nav-inner">
+    <header className="lc-navbar">
+      <div className="lc-navbar-inner">
 
-        {/* Logo */}
+        {/* =================================================
+            BRAND
+        ================================================= */}
 
-        <div className="logo">
+        <NavLink
+          to="/"
+          className="lc-brand"
+          aria-label={`${settings.websiteName} home`}
+        >
+          <div className="lc-brand-logo">
 
-          {settings.logo ? (
-            <img
-              src={settings.logo}
-              alt={settings.websiteName}
-              style={{
-                width: 55,
-                height: 55,
-                borderRadius: "50%",
-                objectFit: "cover",
-                marginRight: "10px",
-              }}
-            />
-          ) : (
-            <NavLink to="/" className="seal-mark">LC</NavLink>
-            
-          )}
+            {settings.logo ? (
+              <img
+                src={settings.logo}
+                alt={settings.websiteName}
+                className="lc-brand-logo-image"
+              />
+            ) : (
+              <span className="lc-brand-seal">
+                LC
+              </span>
+            )}
 
-          <div className="logo-text">
-            <div className="name">
-              {settings.websiteName}
-            </div>
-
-            <div className="sub">
-              {settings.tagline}
-            </div>
           </div>
 
-        </div>
+          <div className="lc-brand-copy">
+            <span className="lc-brand-name">
+              {settings.websiteName}
+            </span>
 
-        {/* Navigation */}
+            <span className="lc-brand-tagline">
+              {settings.tagline}
+            </span>
+          </div>
+        </NavLink>
 
-        <nav className="primary">
+        {/* =================================================
+            DESKTOP NAVIGATION
+        ================================================= */}
 
-          <NavLink to="/" className={({ isActive }) => isActive && activeSection === "home" ? "active" : ""}> Home</NavLink>
+        <nav
+          className="lc-desktop-navigation"
+          aria-label="Main navigation"
+        >
 
-          <NavLink to="/blog">Blogs</NavLink>
+          <NavLink
+            to="/"
+            className={desktopNavLinkClass}
+          >
+            Home
+          </NavLink>
 
-          <span className={activeSection === "practice" ? "active" : ""} onClick={() => handleSectionClick("practice")}> Practice </span>
+          <NavLink
+            to="/blog"
+            className={({ isActive }) =>
+              `lc-nav-link ${
+                isActive ? "is-active" : ""
+              }`
+            }
+          >
+            Blogs
+          </NavLink>
 
-          <span className={activeSection === "about" ? "active" : ""} onClick={() => handleSectionClick("about")}> About </span>
+          <button
+            type="button"
+            className={`lc-nav-link lc-nav-button ${
+              isSectionActive("practice")
+                ? "is-active"
+                : ""
+            }`}
+            onClick={() =>
+              handleSectionClick("practice")
+            }
+          >
+            Practice
+          </button>
 
-          <span className={activeSection === "insights" ? "active" : ""} onClick={() => handleSectionClick("insights")}> Insights </span>
+          <button
+            type="button"
+            className={`lc-nav-link lc-nav-button ${
+              isSectionActive("about")
+                ? "is-active"
+                : ""
+            }`}
+            onClick={() =>
+              handleSectionClick("about")
+            }
+          >
+            About
+          </button>
 
-          <span className={activeSection === "contactUs" ? "active" : ""} onClick={() => handleSectionClick("contactUs")}> ContactUs </span>
+          <button
+            type="button"
+            className={`lc-nav-link lc-nav-button ${
+              isSectionActive("insights")
+                ? "is-active"
+                : ""
+            }`}
+            onClick={() =>
+              handleSectionClick("insights")
+            }
+          >
+            Insights
+          </button>
 
+          <button
+            type="button"
+            className={`lc-nav-link lc-nav-button ${
+              isSectionActive("contactUs")
+                ? "is-active"
+                : ""
+            }`}
+            onClick={() =>
+              handleSectionClick("contactUs")
+            }
+          >
+            Contact
+          </button>
 
         </nav>
 
-        <div className="nav-actions d-flex align-items-center gap-2">
+        {/* =================================================
+            DESKTOP ACTIONS
+        ================================================= */}
+
+        <div className="lc-navbar-actions">
 
           {!user ? (
             <>
               <NavLink
                 to="/login"
-                className="btn btn-outline"
+                className="lc-action-secondary"
               >
                 Sign In
               </NavLink>
 
               <NavLink
                 to="/signup"
-                className="btn btn-primary"
+                className="lc-action-secondary"
               >
                 Sign Up
               </NavLink>
 
               <NavLink
                 to="/contactUs"
-                className="btn btn-primary"
+                className="lc-action-primary"
               >
                 Book Consultation
               </NavLink>
@@ -138,29 +325,31 @@ export default function Navbar({ activeSection = "home" }) {
             <>
               <NavLink
                 to="/account"
-                className="btn btn-outline"
+                className="lc-action-secondary lc-account-button"
               >
-                {user.fullname?.split(" ")[0]}
+                {user.fullname?.split(" ")[0] ||
+                  "Account"}
               </NavLink>
 
               {user.role === "admin" ? (
                 <NavLink
                   to="/admin/dashboard"
-                  className="btn btn-primary"
+                  className="lc-action-primary"
                 >
                   Admin Dashboard
                 </NavLink>
               ) : (
                 <NavLink
                   to="/contactUs"
-                  className="btn btn-primary"
+                  className="lc-action-primary"
                 >
                   Book Consultation
                 </NavLink>
               )}
 
               <button
-                className="btn btn-danger"
+                type="button"
+                className="lc-action-danger"
                 onClick={handleLogout}
               >
                 Logout
@@ -170,108 +359,237 @@ export default function Navbar({ activeSection = "home" }) {
 
         </div>
 
+        {/* =================================================
+            MOBILE MENU BUTTON
+        ================================================= */}
 
         <button
-  className="menu-btn"
-  onClick={() => setMenuOpen(!menuOpen)}
->
-  {menuOpen ? <X size={28} /> : <Menu size={28} />}
-</button>
+          type="button"
+          className="lc-mobile-menu-button"
+          onClick={() =>
+            setMenuOpen((previous) => !previous)
+          }
+          aria-label={
+            menuOpen
+              ? "Close navigation menu"
+              : "Open navigation menu"
+          }
+          aria-expanded={menuOpen}
+          aria-controls="lc-mobile-navigation"
+        >
+          {menuOpen ? (
+            <X size={24} strokeWidth={1.7} />
+          ) : (
+            <Menu size={24} strokeWidth={1.7} />
+          )}
+        </button>
 
       </div>
-      {menuOpen && (
-  <div className="mobile-menu">
 
-    <NavLink to="/" onClick={() => setMenuOpen(false)}>
-      Home
-    </NavLink>
+      {/* ===================================================
+          MOBILE NAVIGATION
+      =================================================== */}
 
-    <NavLink to="/blog" onClick={() => setMenuOpen(false)}>
-      Blogs
-    </NavLink>
+      <div
+        id="lc-mobile-navigation"
+        className={`lc-mobile-navigation ${
+          menuOpen ? "is-open" : ""
+        }`}
+        aria-hidden={!menuOpen}
+      >
 
-    <button
-      className="mobile-link"
-      onClick={() => {
-        handleSectionClick("practice");
-        setMenuOpen(false);
-      }}
-    >
-      Practice
-    </button>
+        <div className="lc-mobile-navigation-inner">
 
-    <button
-      className="mobile-link"
-      onClick={() => {
-        handleSectionClick("about");
-        setMenuOpen(false);
-      }}
-    >
-      About
-    </button>
+          {/* Main links */}
 
-    <button
-      className="mobile-link"
-      onClick={() => {
-        handleSectionClick("insights");
-        setMenuOpen(false);
-      }}
-    >
-      Insights
-    </button>
+          <div className="lc-mobile-links">
 
-    <button
-      className="mobile-link"
-      onClick={() => {
-        handleSectionClick("contactUs");
-        setMenuOpen(false);
-      }}
-    >
-      Contact Us
-    </button>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `lc-mobile-link ${
+                  isActive &&
+                  location.pathname === "/"
+                    ? "is-active"
+                    : ""
+                }`
+              }
+              onClick={() =>
+                setMenuOpen(false)
+              }
+            >
+              <span>Home</span>
+              <span aria-hidden="true">→</span>
+            </NavLink>
 
-    <hr />
+            <NavLink
+              to="/blog"
+              className={({ isActive }) =>
+                `lc-mobile-link ${
+                  isActive ? "is-active" : ""
+                }`
+              }
+              onClick={() =>
+                setMenuOpen(false)
+              }
+            >
+              <span>Blogs</span>
+              <span aria-hidden="true">→</span>
+            </NavLink>
 
-    {!user ? (
-      <>
-        <NavLink to="/login" onClick={() => setMenuOpen(false)}>
-          Sign In
-        </NavLink>
+            <button
+              type="button"
+              className={`lc-mobile-link ${
+                isSectionActive("practice")
+                  ? "is-active"
+                  : ""
+              }`}
+              onClick={() =>
+                handleSectionClick("practice")
+              }
+            >
+              <span>Practice</span>
+              <span aria-hidden="true">→</span>
+            </button>
 
-        <NavLink to="/signup" onClick={() => setMenuOpen(false)}>
-          Sign Up
-        </NavLink>
+            <button
+              type="button"
+              className={`lc-mobile-link ${
+                isSectionActive("about")
+                  ? "is-active"
+                  : ""
+              }`}
+              onClick={() =>
+                handleSectionClick("about")
+              }
+            >
+              <span>About</span>
+              <span aria-hidden="true">→</span>
+            </button>
 
-        <NavLink to="/contactUs" onClick={() => setMenuOpen(false)}>
-          Book Consultation
-        </NavLink>
-      </>
-    ) : (
-      <>
-        <NavLink to="/account" onClick={() => setMenuOpen(false)}>
-          {user.fullname?.split(" ")[0]}
-        </NavLink>
+            <button
+              type="button"
+              className={`lc-mobile-link ${
+                isSectionActive("insights")
+                  ? "is-active"
+                  : ""
+              }`}
+              onClick={() =>
+                handleSectionClick("insights")
+              }
+            >
+              <span>Insights</span>
+              <span aria-hidden="true">→</span>
+            </button>
 
-        {user.role === "admin" && (
-          <NavLink
-            to="/admin/dashboard"
-            onClick={() => setMenuOpen(false)}
-          >
-            Admin Dashboard
-          </NavLink>
-        )}
+            <button
+              type="button"
+              className={`lc-mobile-link ${
+                isSectionActive("contactUs")
+                  ? "is-active"
+                  : ""
+              }`}
+              onClick={() =>
+                handleSectionClick("contactUs")
+              }
+            >
+              <span>Contact</span>
+              <span aria-hidden="true">→</span>
+            </button>
 
-        <button
-          className="mobile-link logout-btn"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      </>
-    )}
+          </div>
 
-  </div>
-)}
+          {/* Divider */}
+
+          <div className="lc-mobile-divider" />
+
+          {/* User actions */}
+
+          <div className="lc-mobile-actions">
+
+            {!user ? (
+              <>
+                <NavLink
+                  to="/login"
+                  className="lc-mobile-action-secondary"
+                  onClick={() =>
+                    setMenuOpen(false)
+                  }
+                >
+                  Sign In
+                </NavLink>
+
+                <NavLink
+                  to="/signup"
+                  className="lc-mobile-action-secondary"
+                  onClick={() =>
+                    setMenuOpen(false)
+                  }
+                >
+                  Sign Up
+                </NavLink>
+
+                <NavLink
+                  to="/contactUs"
+                  className="lc-mobile-action-primary"
+                  onClick={() =>
+                    setMenuOpen(false)
+                  }
+                >
+                  Book Consultation
+                </NavLink>
+              </>
+            ) : (
+              <>
+                <NavLink
+                  to="/account"
+                  className="lc-mobile-action-secondary"
+                  onClick={() =>
+                    setMenuOpen(false)
+                  }
+                >
+                  {user.fullname?.split(" ")[0] ||
+                    "Account"}
+                </NavLink>
+
+                {user.role === "admin" ? (
+                  <NavLink
+                    to="/admin/dashboard"
+                    className="lc-mobile-action-primary"
+                    onClick={() =>
+                      setMenuOpen(false)
+                    }
+                  >
+                    Admin Dashboard
+                  </NavLink>
+                ) : (
+                  <NavLink
+                    to="/contactUs"
+                    className="lc-mobile-action-primary"
+                    onClick={() =>
+                      setMenuOpen(false)
+                    }
+                  >
+                    Book Consultation
+                  </NavLink>
+                )}
+
+                <button
+                  type="button"
+                  className="lc-mobile-action-danger"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </>
+            )}
+
+          </div>
+
+        </div>
+
+      </div>
+
     </header>
   );
 }

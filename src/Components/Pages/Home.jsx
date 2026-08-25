@@ -14,72 +14,88 @@ export default function Home() {
 
     const [activeSection, setActiveSection] = useState("home");
 
-    // Scroll to section when coming from another page
     useEffect(() => {
-        if (location.state?.scrollTo) {
-            const id = location.state.scrollTo;
-
-            setTimeout(() => {
-                const element = document.getElementById(id);
-
-                if (element) {
-                    element.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start",
-                    });
-                }
-
-                window.history.replaceState({}, document.title);
-            }, 100);
+        if (!location.state?.scrollTo) {
+            return;
         }
+
+        const id = location.state.scrollTo;
+
+        const scrollToSection = () => {
+            const element = document.getElementById(id);
+
+            if (element) {
+                element.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        };
+
+        const timer = setTimeout(scrollToSection, 100);
+
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
+
+        return () => clearTimeout(timer);
     }, [location]);
 
-    // Scroll Spy
     useEffect(() => {
         const sections = [
             "hero",
             "practice",
             "about",
             "insights",
+            "contactUs",
         ];
 
         const observer = new IntersectionObserver(
             (entries) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) return;
+                const visibleEntries = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort(
+                        (a, b) =>
+                            b.intersectionRatio -
+                            a.intersectionRatio
+                    );
 
-                    switch (entry.target.id) {
-                        case "hero":
-                            setActiveSection("home");
-                            break;
+                const visibleSection =
+                    visibleEntries[0];
 
-                        case "practice":
-                            setActiveSection("practice");
-                            break;
+                if (!visibleSection) {
+                    return;
+                }
 
-                        case "about":
-                            setActiveSection("about");
-                            break;
+                const sectionMap = {
+                    hero: "home",
+                    practice: "practice",
+                    about: "about",
+                    insights: "insights",
+                    contactUs: "contactUs",
+                };
 
-                        case "insights":
-                            setActiveSection("insights");
-                            break;
-
-                        default:
-                            break;
-                    }
-                });
+                setActiveSection(
+                    sectionMap[
+                        visibleSection.target.id
+                    ] || "home"
+                );
             },
             {
-                threshold: 0.45,
+                root: null,
+                rootMargin: "-20% 0px -55% 0px",
+                threshold: [0.1, 0.25, 0.5],
             }
         );
 
         sections.forEach((id) => {
-            const section = document.getElementById(id);
+            const element =
+                document.getElementById(id);
 
-            if (section) {
-                observer.observe(section);
+            if (element) {
+                observer.observe(element);
             }
         });
 
@@ -90,27 +106,28 @@ export default function Home() {
         <>
             <Navbar activeSection={activeSection} />
 
-            <div id="hero">
-                <Hero />
-            </div>
+            <main className="home-page">
+                <div id="hero">
+                    <Hero />
+                </div>
 
-            <div id="practice">
-                <Practice/>
-            </div>
+                <div id="practice">
+                    <Practice />
+                </div>
 
-            <div id="about">
-                <About />
-            </div>
+                <div id="about">
+                    <About />
+                </div>
 
-            <div id="insights">
-                <Insights />
-            </div>
+                <div id="insights">
+                    <Insights />
+                </div>
 
-            <div id="insights">
-                <ContactUs />
-            </div>
+                <div id="contactUs">
+                    <ContactUs />
+                </div>
+            </main>
 
-        
             <Footer />
         </>
     );

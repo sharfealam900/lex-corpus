@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { SETTING_API } from "../utils/constant";
 import { Link } from "react-router-dom";
+import { SETTING_API } from "../utils/constant";
 
 export default function Footer() {
   const [settings, setSettings] = useState({
@@ -16,7 +16,7 @@ export default function Footer() {
     linkedin: "",
     twitter: "",
   });
-  // 
+
   useEffect(() => {
     fetchSettings();
   }, []);
@@ -34,159 +34,170 @@ export default function Footer() {
   };
 
   return (
+    <footer className="site-footer">
+      <div className="wrap">
 
-    <div className="wrap">
+        <div className="footer-grid">
 
-      <div className="footer-grid">
+          <div className="footer-brand">
 
-        {/* Left */}
+            <Link to="/" className="footer-logo">
+              {settings.websiteName}
+            </Link>
 
-        <div className="footer-brand">
+            <p className="footer-tagline">
+              {settings.tagline}
+            </p>
 
-          <div className="name">
-            {settings.websiteName}
+            <div className="footer-contact">
+
+              {settings.contactEmail && (
+                <div className="footer-contact-item">
+                  <span>Email</span>
+                  <a href={`mailto:${settings.contactEmail}`}>
+                    {settings.contactEmail}
+                  </a>
+                </div>
+              )}
+
+              {settings.phone && (
+                <div className="footer-contact-item">
+                  <span>Phone</span>
+                  <a href={`tel:${settings.phone}`}>
+                    {settings.phone}
+                  </a>
+                </div>
+              )}
+
+              {settings.address && (
+                <div className="footer-contact-item">
+                  <span>Office</span>
+                  <p>{settings.address}</p>
+                </div>
+              )}
+
+            </div>
+
           </div>
 
-          <p>
-            {settings.tagline}
-          </p>
+          <div className="footer-column">
 
-          {settings.contactEmail && (
-            <p className="mb-1">
-              <strong>Email:</strong>{" "}
-              <a href={`mailto:${settings.contactEmail}`}>
-                {settings.contactEmail}
-              </a>
-            </p>
-          )}
-
-          {settings.phone && (
-            <p className="mb-1">
-              <strong>Phone:</strong>{" "}
-              <a href={`tel:${settings.phone}`}>
-                {settings.phone}
-              </a>
-            </p>
-          )}
-
-          {settings.address && (
-            <p className="mb-0">
-              <strong>Address:</strong><br />
-              {settings.address}
-            </p>
-          )}
-
-        </div>
-
-        {/* Middle */}
-
-        <div className="footer-cols">
-
-          <div className="footer-col">
-
-            <div className="label">
+            <div className="footer-label">
               Practice
             </div>
 
-            <a href="#practice">Criminal Law</a>
-            <a href="#practice">Civil Litigation</a>
-            <a href="#practice">Intellectual Property</a>
-            <a href="#practice">Cyber Law</a>
-            <a href="#practice">Taxation</a>
-            <a href="#practice">Corporate Law</a>
-            <a href="#practice">Family Law</a>
+            <a href="/#practice">Criminal Law</a>
+            <a href="/#practice">Civil Litigation</a>
+            <a href="/#practice">Intellectual Property</a>
+            <a href="/#practice">Cyber Law</a>
+            <a href="/#practice">Taxation</a>
+            <a href="/#practice">Corporate Law</a>
+            <a href="/#practice">Family Law</a>
 
           </div>
 
-          <div className="footer-col">
+          <div className="footer-column">
 
-            <div className="label">
-              Quick Links
+            <div className="footer-label">
+              Explore
             </div>
 
-            <a href="#about">About</a>
-            <a href="#insights">Insights</a>
-            <a href="/contactUs">Contact</a>
+            <a href="/#about">About</a>
+            <a href="/#insights">Insights</a>
+
+            <Link to="/blog">
+              Blogs
+            </Link>
+
+            <Link to="/contactUs">
+              Contact
+            </Link>
+
+            <Link to="/contactUs">
+              Book Consultation
+            </Link>
+
+          </div>
+
+          <div className="footer-column footer-social-column">
+
+            <div className="footer-label">
+              Follow Us
+            </div>
+
+            <div className="footer-socials">
+
+              {settings.facebook && (
+                <a
+                  href={settings.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                >
+                  <i className="bi bi-facebook"></i>
+                </a>
+              )}
+
+              {settings.instagram && (
+                <a
+                  href={settings.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                >
+                  <i className="bi bi-instagram"></i>
+                </a>
+              )}
+
+              {settings.linkedin && (
+                <a
+                  href={settings.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <i className="bi bi-linkedin"></i>
+                </a>
+              )}
+
+              {settings.twitter && (
+                <a
+                  href={settings.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="X"
+                >
+                  <i className="bi bi-twitter-x"></i>
+                </a>
+              )}
+
+            </div>
+
+            <Link
+              to="/contactUs"
+              className="footer-cta"
+            >
+              Discuss your matter
+              <span>↗</span>
+            </Link>
 
           </div>
 
         </div>
 
-        {/* Right */}
+        <div className="footer-bottom">
 
-        <div className="footer-col">
+          <span>
+            © {new Date().getFullYear()} {settings.websiteName}. All rights reserved.
+          </span>
 
-          <div className="label">
-            Follow Us
-          </div>
-
-          <div className="social-links d-flex align-items-center">
-
-            {settings.twitter && (
-              <a
-                href={settings.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="twitter text-dark fs-2 mt-2 me-3"
-              >
-                <i className="bi bi-twitter-x"></i>
-              </a>
-            )}
-
-            {settings.facebook && (
-              <a
-                href={settings.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="facebook text-dark fs-2 mt-2 me-3"
-              >
-                <i className="bi bi-facebook"></i>
-              </a>
-            )}
-
-            {settings.instagram && (
-              <a
-                href={settings.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="instagram text-dark fs-2 mt-2 me-3"
-              >
-                <i className="bi bi-instagram"></i>
-              </a>
-            )}
-
-            {settings.linkedin && (
-              <a
-                href={settings.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="linkedin text-dark fs-2 mt-2 me-3"
-              >
-                <i className="bi bi-linkedin"></i>
-              </a>
-            )}
-
-          </div>
+          <span>
+            Legal Solutions You Can Trust
+          </span>
 
         </div>
 
       </div>
-
-
-
-      <div className="footer-bottom">
-
-        <span>
-          © {new Date().getFullYear()} {settings.websiteName}. All rights
-          reserved.
-        </span>
-
-        <span>
-          Designed & Developed by {settings.websiteName}
-        </span>
-
-      </div>
-
-    </div>
+    </footer>
   );
 }

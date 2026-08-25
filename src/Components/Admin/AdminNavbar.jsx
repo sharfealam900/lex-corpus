@@ -1,8 +1,11 @@
 import React from "react";
-import { Bell, UserCircle } from "lucide-react";
+import {
+  Menu,
+  UserCircle,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function AdminNavbar() {
+export default function AdminNavbar({ onMenuClick }) {
 
   const today = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
@@ -12,42 +15,49 @@ export default function AdminNavbar() {
   });
 
   return (
+    <header className="admin-navbar">
 
-    <nav className="admin-navbar">
+      <div className="admin-navbar-left">
 
-      <div className="admin-navbar-title">
+        {/* Mobile menu button */}
+        <button
+          type="button"
+          className="admin-menu-toggle"
+          onClick={onMenuClick}
+          aria-label="Open navigation"
+        >
+          <Menu size={22} strokeWidth={2} />
+        </button>
 
-        <h5>Admin Dashboard</h5>
-
-        <small>{today}</small>
+        <div className="admin-navbar-title">
+          <h5>Admin Dashboard</h5>
+          <small>{today}</small>
+        </div>
 
       </div>
 
       <div className="admin-navbar-right">
 
+        <Link
+          to="/"
+          className="admin-profile"
+          aria-label="Go to website"
+        >
 
-        <div className="admin-profile">
+          <UserCircle
+            className="admin-profile-icon"
+            size={27}
+          />
 
-          <UserCircle />
-          <Link to="/">
-            <div className="admin-profile-info">
+          <div className="admin-profile-info">
+            <h6>Administrator</h6>
+            <span>Lex Corpus</span>
+          </div>
 
-              <h6>Administrator</h6>
-
-              <span>Lex Corpus</span>
-
-            </div>
-
-          </Link>
-
-
-
-        </div>
+        </Link>
 
       </div>
 
-    </nav>
-
+    </header>
   );
-
 }

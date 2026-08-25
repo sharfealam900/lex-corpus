@@ -7,386 +7,654 @@ import { ARTICLE_API } from "../../utils/constant";
 import AdminLayout from "../Admin/AdminLayout";
 
 export default function EditArticle() {
-    const navigate = useNavigate();
-    const { id } = useParams();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-    const [loading, setLoading] = useState(false);
-    const [fetching, setFetching] = useState(true);
-    const [uploadingImage, setUploadingImage] = useState(false);
-    const [preview, setPreview] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-    const [formData, setFormData] = useState({
-        title: "",
-        category: "",
-        excerpt: "",
-        content: "",
-        readTime: "",
-        author: "",
-        image: "",
-        published: true,
-    });
+  const [formData, setFormData] = useState({
+    title: "",
+    category: "",
+    excerpt: "",
+    content: "",
+    readTime: "5 min read",
+    author: "Lex Corpus",
+    published: true,
+  });
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+  // ==============================
+  // FETCH ARTICLE
+  // ==============================
 
-        setFormData((prev) => ({
-            ...prev,
-            [name]: type === "checkbox" ? checked : value,
-        }));
-    };
+  const fetchArticle = async () => {
+    try {
+      setLoading(true);
 
-    const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
+      const { data } = await axios.get(
+        `${ARTICLE_API}/${id}`
+      );
 
-        if (!file) return;
+      if (data.success) {
+        const article = data.article;
 
-        setPreview(URL.createObjectURL(file));
+        setFormData({
+          title: article.title || "",
+          category: article.category || "",
+          excerpt: article.excerpt || "",
+          content: article.content || "",
+          readTime: article.readTime || "5 min read",
+          author: article.author || "Lex Corpus",
+          published:
+            typeof article.published === "boolean"
+              ? article.published
+              : true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
 
-        const uploadData = new FormData();
-        uploadData.append("image", file);
+      Swal.fire({
+        icon: "error",
+        title: "Unable to load article",
+        text:
+          error.response?.data?.message ||
+          "Something went wrong while loading the article.",
+      });
 
-        try {
-            setUploadingImage(true);
+      navigate("/admin/articles");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            const { data } = await axios.post(
-                `${ARTICLE_API}/upload-image`,
-                uploadData,
-                {
-                    withCredentials: true,
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
+  useEffect(() => {
+    if (id) {
+      fetchArticle();
+    }
+  }, [id]);
 
-            setFormData((prev) => ({
-                ...prev,
-                image: data.imageUrl,
-            }));
+  // ==============================
+  // INPUT CHANGE
+  // ==============================
 
-            Swal.fire({
-                icon: "success",
-                title: "Uploaded",
-                text: "Image uploaded successfully.",
-                timer: 1500,
-                showConfirmButton: false,
-            });
-        } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Upload Failed",
-                text:
-                    error.response?.data?.message ||
-                    "Unable to upload image.",
-            });
-        } finally {
-            setUploadingImage(false);
-        }
-    };
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
 
-    const fetchArticle = async () => {
-        try {
-            const { data } = await axios.get(`${ARTICLE_API}/${id}`);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
-            if (data.success) {
-                setFormData({
-                    title: data.article.title || "",
-                    category: data.article.category || "",
-                    excerpt: data.article.excerpt || "",
-                    content: data.article.content || "",
-                    readTime: data.article.readTime || "",
-                    author: data.article.author || "",
-                    image: data.article.image || "",
-                    published: data.article.published,
-                });
+  // ==============================
+  // UPDATE ARTICLE
+  // ==============================
 
-                setPreview(data.article.image || "");
-            }
-        } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text:
-                    error.response?.data?.message ||
-                    "Unable to load article.",
-            });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-            navigate("/admin/articles");
-        } finally {
-            setFetching(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchArticle();
-    }, []);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        setLoading(true);
-
-        try {
-            const { data } = await axios.put(
-                `${ARTICLE_API}/${id}`,
-                formData,
-                {
-                    withCredentials: true,
-                }
-            );
-
-            await Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: data.message,
-            });
-
-            navigate("/admin/articles");
-        } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Failed",
-                text:
-                    error.response?.data?.message ||
-                    "Unable to update article.",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (fetching) {
-        return (
-            <AdminLayout>
-                <div className="container py-5 text-center">
-                    <h3>Loading Article...</h3>
-                </div>
-            </AdminLayout>
-        );
+    if (!formData.title.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Title required",
+        text: "Please enter an article title.",
+      });
+      return;
     }
 
+    if (!formData.category.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Category required",
+        text: "Please select an article category.",
+      });
+      return;
+    }
+
+    if (!formData.excerpt.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Excerpt required",
+        text: "Please enter a short excerpt.",
+      });
+      return;
+    }
+
+    if (!formData.content.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Content required",
+        text: "Please enter the article content.",
+      });
+      return;
+    }
+
+    try {
+      setSaving(true);
+
+      const { data } = await axios.put(
+        `${ARTICLE_API}/${id}`,
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+
+      Swal.fire({
+        icon: "success",
+        title: "Article Updated",
+        text:
+          data.message ||
+          "Article has been updated successfully.",
+        timer: 1600,
+        showConfirmButton: false,
+      });
+
+      navigate("/admin/articles");
+    } catch (error) {
+      console.error(error);
+
+      Swal.fire({
+        icon: "error",
+        title: "Update failed",
+        text:
+          error.response?.data?.message ||
+          "Unable to update article.",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ==============================
+  // LOADING
+  // ==============================
+
+  if (loading) {
     return (
-        <AdminLayout>
-            <div className="container py-4">
-                <div className="card shadow border-0">
-                    <div className="card-header bg-dark text-white">
-                        <h3 className="mb-0">Edit Article</h3>
-                    </div>
+      <AdminLayout>
+        <div className="edit-article-page">
+          <div className="edit-loading">
+            <div className="edit-spinner"></div>
+            <p>Loading article...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
-                    <div className="card-body">
-                        <form onSubmit={handleSubmit}>
-                            {/* Title */}
+  // ==============================
+  // PAGE
+  // ==============================
 
-                            <div className="mb-3">
-                                <label className="form-label fw-semibold">
-                                    Title
-                                </label>
+  return (
+    <AdminLayout>
+      <div className="edit-article-page">
 
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+        {/* HEADER */}
 
-                            {/* Category */}
+        <div className="edit-article-header">
 
-                            <div className="mb-3">
-                                <label className="form-label fw-semibold">
-                                    Category
-                                </label>
+          <div className="edit-header-left">
 
-                                <select
-                                    className="form-select"
-                                    name="category"
-                                    value={formData.category}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">Select Category</option>
-                                    <option value="Criminal">Criminal</option>
-                                    <option value="Civil">Civil</option>
-                                    <option value="Corporate">Corporate</option>
-                                    <option value="Cyber">Cyber</option>
-                                    <option value="IP">Intellectual Property</option>
-                                    <option value="Taxation">Taxation</option>
-                                    <option value="Family">Family</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
+            <button
+              type="button"
+              className="edit-back-btn"
+              onClick={() =>
+                navigate("/admin/articles")
+              }
+            >
+              <i className="bi bi-arrow-left"></i>
+            </button>
 
-                            {/* Excerpt */}
+            <div>
+              <div className="edit-eyebrow">
+                CONTENT MANAGEMENT
+              </div>
 
-                            <div className="mb-3">
-                                <label className="form-label fw-semibold">
-                                    Excerpt
-                                </label>
+              <h1>Edit Article</h1>
 
-                                <textarea
-                                    className="form-control"
-                                    rows="3"
-                                    name="excerpt"
-                                    value={formData.excerpt}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+              <p>
+                Update your legal insight and publication
+                details.
+              </p>
+            </div>
 
-                            {/* Content */}
+          </div>
 
-                            <div className="mb-3">
-                                <label className="form-label fw-semibold">
-                                    Content
-                                </label>
+          <div className="edit-header-actions">
 
-                                <textarea
-                                    className="form-control"
-                                    rows="10"
-                                    name="content"
-                                    value={formData.content}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
+            <button
+              type="button"
+              className="edit-cancel-btn"
+              onClick={() =>
+                navigate("/admin/articles")
+              }
+            >
+              Cancel
+            </button>
 
-                            {/* Read Time & Author */}
+            <button
+              type="submit"
+              form="editArticleForm"
+              className="edit-save-btn"
+              disabled={saving}
+            >
+              {saving ? (
+                <>
+                  <span className="edit-btn-spinner"></span>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-check2"></i>
+                  Save Changes
+                </>
+              )}
+            </button>
 
-                            <div className="row">
+          </div>
 
-                                <div className="col-md-6 mb-3">
-                                    <label className="form-label fw-semibold">
-                                        Read Time
-                                    </label>
+        </div>
 
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        name="readTime"
-                                        value={formData.readTime}
-                                        onChange={handleChange}
-                                    />
-                                </div>
+        {/* FORM */}
 
-                                <div className="col-md-6 mb-3">
-                                    <label className="form-label fw-semibold">
-                                        Author
-                                    </label>
+        <form
+          id="editArticleForm"
+          onSubmit={handleSubmit}
+          className="edit-article-layout"
+        >
 
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        name="author"
-                                        value={formData.author}
-                                        onChange={handleChange}
-                                    />
-                                </div>
+          {/* MAIN CONTENT */}
 
-                            </div>
+          <div className="edit-main-column">
 
-                            {/* Image Upload */}
+            {/* BASIC INFORMATION */}
 
-                            <div className="mb-4">
+            <section className="edit-card">
 
-                                <label className="form-label fw-semibold">
-                                    Article Image
-                                </label>
+              <div className="edit-card-header">
 
-                                <input
-                                    type="file"
-                                    className="form-control"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                />
+                <div className="edit-card-icon">
+                  <i className="bi bi-file-earmark-text"></i>
+                </div>
 
-                                {uploadingImage && (
-                                    <div className="mt-2 text-primary">
-                                        Uploading image...
-                                    </div>
-                                )}
+                <div>
+                  <h2>Article Information</h2>
+                  <p>
+                    Main information displayed on your
+                    article page.
+                  </p>
+                </div>
 
-                                {preview && (
-                                    <div className="mt-3">
-                                        <img
-                                            src={preview}
-                                            alt="Preview"
-                                            className="img-fluid rounded border"
-                                            style={{
-                                                maxHeight: "300px",
-                                                objectFit: "cover",
-                                            }}
-                                        />
-                                    </div>
-                                )}
+              </div>
 
-                                {formData.image && (
-                                    <div className="mt-2">
-                                        <small className="text-success">
-                                            ✓ Image Ready
-                                        </small>
-                                    </div>
-                                )}
+              <div className="edit-card-body">
 
-                            </div>
+                {/* TITLE */}
 
-                            {/* Publish */}
+                <div className="edit-field">
 
-                            <div className="form-check mb-4">
+                  <label htmlFor="title">
+                    Article Title
+                    <span>*</span>
+                  </label>
 
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id="published"
-                                    name="published"
-                                    checked={formData.published}
-                                    onChange={handleChange}
-                                />
-
-                                <label
-                                    className="form-check-label"
-                                    htmlFor="published"
-                                >
-                                    Publish Article
-                                </label>
-
-                            </div>
-
-                            {/* Buttons */}
-
-                            <div className="d-flex gap-2">
-
-                                <button
-                                    type="submit"
-                                    className="btn btn-dark"
-                                    disabled={loading || uploadingImage}
-                                >
-                                    {loading
-                                        ? "Updating..."
-                                        : uploadingImage
-                                            ? "Uploading..."
-                                            : "Update Article"}
-                                </button>
-
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={() => navigate("/admin/articles")}
-                                >
-                                    Cancel
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
+                  <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    value={formData.title}
+                    onChange={handleChange}
+                    placeholder="Enter article title"
+                  />
 
                 </div>
 
-            </div>
+                {/* CATEGORY + READ TIME */}
 
-        </AdminLayout>
-    );
+                <div className="edit-form-row">
+
+                  <div className="edit-field">
+
+                    <label htmlFor="category">
+                      Category
+                      <span>*</span>
+                    </label>
+
+                    <select
+                      id="category"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                    >
+                      <option value="">
+                        Select category
+                      </option>
+
+                      <option value="Family">
+                        Family
+                      </option>
+
+                      <option value="Criminal">
+                        Criminal
+                      </option>
+
+                      <option value="Civil">
+                        Civil
+                      </option>
+
+                      <option value="Corporate">
+                        Corporate
+                      </option>
+
+                      <option value="Cyber">
+                        Cyber Law
+                      </option>
+
+                      <option value="Tax">
+                        Taxation
+                      </option>
+
+                      <option value="Intellectual Property">
+                        Intellectual Property
+                      </option>
+                    </select>
+
+                  </div>
+
+                  <div className="edit-field">
+
+                    <label htmlFor="readTime">
+                      Reading Time
+                    </label>
+
+                    <input
+                      id="readTime"
+                      name="readTime"
+                      type="text"
+                      value={formData.readTime}
+                      onChange={handleChange}
+                      placeholder="5 min read"
+                    />
+
+                  </div>
+
+                </div>
+
+                {/* AUTHOR */}
+
+                <div className="edit-field">
+
+                  <label htmlFor="author">
+                    Author
+                  </label>
+
+                  <input
+                    id="author"
+                    name="author"
+                    type="text"
+                    value={formData.author}
+                    onChange={handleChange}
+                    placeholder="Author name"
+                  />
+
+                </div>
+
+                {/* EXCERPT */}
+
+                <div className="edit-field">
+
+                  <div className="edit-label-row">
+
+                    <label htmlFor="excerpt">
+                      Short Excerpt
+                      <span>*</span>
+                    </label>
+
+                    <small>
+                      Short description
+                    </small>
+
+                  </div>
+
+                  <textarea
+                    id="excerpt"
+                    name="excerpt"
+                    rows="3"
+                    value={formData.excerpt}
+                    onChange={handleChange}
+                    placeholder="Write a short description of the article..."
+                  />
+
+                </div>
+
+              </div>
+
+            </section>
+
+            {/* ARTICLE CONTENT */}
+
+            <section className="edit-card">
+
+              <div className="edit-card-header">
+
+                <div className="edit-card-icon">
+                  <i className="bi bi-journal-text"></i>
+                </div>
+
+                <div>
+                  <h2>Article Content</h2>
+                  <p>
+                    Write and edit the full legal article.
+                  </p>
+                </div>
+
+              </div>
+
+              <div className="edit-card-body">
+
+                <div className="edit-field">
+
+                  <div className="edit-label-row">
+
+                    <label htmlFor="content">
+                      Content
+                      <span>*</span>
+                    </label>
+
+                    <small>
+                      Full article body
+                    </small>
+
+                  </div>
+
+                  <textarea
+                    id="content"
+                    name="content"
+                    className="edit-content-textarea"
+                    value={formData.content}
+                    onChange={handleChange}
+                    placeholder="Write your article content here..."
+                  />
+
+                </div>
+
+              </div>
+
+            </section>
+
+          </div>
+
+          {/* SIDEBAR */}
+
+          <aside className="edit-side-column">
+
+            {/* PUBLISH CARD */}
+
+            <section className="edit-card edit-status-card">
+
+              <div className="edit-card-header">
+
+                <div className="edit-card-icon">
+                  <i className="bi bi-send"></i>
+                </div>
+
+                <div>
+                  <h2>Publication</h2>
+                  <p>
+                    Control article visibility.
+                  </p>
+                </div>
+
+              </div>
+
+              <div className="edit-card-body">
+
+                <label
+                  className={`edit-publish-toggle ${
+                    formData.published
+                      ? "published"
+                      : ""
+                  }`}
+                >
+
+                  <div className="publish-info">
+
+                    <div className="publish-icon">
+                      <i
+                        className={
+                          formData.published
+                            ? "bi bi-check-circle"
+                            : "bi bi-file-earmark"
+                        }
+                      ></i>
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {formData.published
+                          ? "Published"
+                          : "Draft"}
+                      </strong>
+
+                      <span>
+                        {formData.published
+                          ? "Visible to visitors"
+                          : "Not visible to visitors"}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                  <input
+                    type="checkbox"
+                    name="published"
+                    checked={formData.published}
+                    onChange={handleChange}
+                  />
+
+                  <span className="toggle-slider"></span>
+
+                </label>
+
+              </div>
+
+            </section>
+
+            {/* QUICK INFO */}
+
+            <section className="edit-card">
+
+              <div className="edit-card-header">
+
+                <div className="edit-card-icon">
+                  <i className="bi bi-info-circle"></i>
+                </div>
+
+                <div>
+                  <h2>Quick Info</h2>
+                  <p>
+                    Article details
+                  </p>
+                </div>
+
+              </div>
+
+              <div className="edit-info-list">
+
+                <div className="edit-info-item">
+
+                  <span>Status</span>
+
+                  <strong
+                    className={
+                      formData.published
+                        ? "status-published"
+                        : "status-draft"
+                    }
+                  >
+                    <i className="bi bi-circle-fill"></i>
+
+                    {formData.published
+                      ? "Published"
+                      : "Draft"}
+                  </strong>
+
+                </div>
+
+                <div className="edit-info-item">
+
+                  <span>Category</span>
+
+                  <strong>
+                    {formData.category || "—"}
+                  </strong>
+
+                </div>
+
+                <div className="edit-info-item">
+
+                  <span>Author</span>
+
+                  <strong>
+                    {formData.author || "—"}
+                  </strong>
+
+                </div>
+
+              </div>
+
+            </section>
+
+            {/* SAVE BUTTON */}
+
+            <button
+              type="submit"
+              className="edit-mobile-save"
+              disabled={saving}
+            >
+              {saving ? (
+                <>
+                  <span className="edit-btn-spinner"></span>
+                  Saving Changes...
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-check2"></i>
+                  Save Changes
+                </>
+              )}
+            </button>
+
+          </aside>
+
+        </form>
+
+      </div>
+    </AdminLayout>
+  );
 }

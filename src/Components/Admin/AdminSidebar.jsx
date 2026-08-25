@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+
 import {
   LayoutDashboard,
   MessageSquare,
@@ -10,10 +11,12 @@ import {
   Settings,
   LogOut,
   Scale,
+  X,
 } from "lucide-react";
+
 import { AUTH_API } from "../../utils/constant";
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -48,6 +51,7 @@ export default function AdminSidebar() {
           showConfirmButton: false,
         });
 
+        onClose();
         navigate("/login");
       }
     } catch (error) {
@@ -61,89 +65,132 @@ export default function AdminSidebar() {
     }
   };
 
+  const handleNavigation = () => {
+    // Close drawer after selecting a page on mobile
+    onClose();
+  };
+
   return (
-    <aside className="admin-sidebar d-flex flex-column justify-content-between">
-      <div>
-        <div className="admin-logo text-center">
-          <Scale size={40} color="#d4af37" />
-          <h4 className="mt-2 mb-0">LEX CORPUS</h4>
-          <small className="text-light">
-            Admin Panel
-          </small>
+    <aside
+      className={`admin-sidebar ${
+        isOpen ? "admin-sidebar-open" : ""
+      }`}
+      aria-hidden={!isOpen}
+    >
+
+      {/* Sidebar Header */}
+      <div className="admin-sidebar-header">
+
+        <div className="admin-brand">
+
+          <div className="admin-brand-icon">
+            <Scale size={24} strokeWidth={1.8} />
+          </div>
+
+          <div className="admin-brand-text">
+            <strong>LEX CORPUS</strong>
+            <span>Admin Panel</span>
+          </div>
+
         </div>
 
-        <div className="admin-menu">
-          <NavLink
-            to="/admin/dashboard"
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <LayoutDashboard size={20} />
-            <span>Dashboard</span>
-          </NavLink>
+        {/* Mobile close button */}
+        <button
+          type="button"
+          className="admin-sidebar-close"
+          onClick={onClose}
+          aria-label="Close navigation"
+        >
+          <X size={21} />
+        </button>
 
-          <NavLink
-            to="/admin/queries"
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <MessageSquare size={20} />
-            <span>Queries</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/articles"
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <Newspaper size={20} />
-            <span>Articles</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/practice"
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <Newspaper size={20} />
-            <span>Practice Edit</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/users"
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <Users size={20} />
-            <span>User</span>
-          </NavLink>
-
-          <NavLink
-            to="/admin/settings"
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <Settings size={20} />
-            <span>Settings</span>
-          </NavLink>
-        </div>
       </div>
 
-      <div className="admin-footer">
+      {/* Navigation */}
+      <nav className="admin-menu">
+
+        <NavLink
+          to="/admin/dashboard"
+          onClick={handleNavigation}
+          className={({ isActive }) =>
+            `admin-menu-link ${isActive ? "active" : ""}`
+          }
+        >
+          <LayoutDashboard size={20} />
+          <span>Dashboard</span>
+        </NavLink>
+
+        <NavLink
+          to="/admin/queries"
+          onClick={handleNavigation}
+          className={({ isActive }) =>
+            `admin-menu-link ${isActive ? "active" : ""}`
+          }
+        >
+          <MessageSquare size={20} />
+          <span>Queries</span>
+        </NavLink>
+
+        <NavLink
+          to="/admin/articles"
+          onClick={handleNavigation}
+          className={({ isActive }) =>
+            `admin-menu-link ${isActive ? "active" : ""}`
+          }
+        >
+          <Newspaper size={20} />
+          <span>Articles</span>
+        </NavLink>
+
+        <NavLink
+          to="/admin/practice"
+          onClick={handleNavigation}
+          className={({ isActive }) =>
+            `admin-menu-link ${isActive ? "active" : ""}`
+          }
+        >
+          <Newspaper size={20} />
+          <span>Practice Edit</span>
+        </NavLink>
+
+        <NavLink
+          to="/admin/users"
+          onClick={handleNavigation}
+          className={({ isActive }) =>
+            `admin-menu-link ${isActive ? "active" : ""}`
+          }
+        >
+          <Users size={20} />
+          <span>Users</span>
+        </NavLink>
+
+        <NavLink
+          to="/admin/settings"
+          onClick={handleNavigation}
+          className={({ isActive }) =>
+            `admin-menu-link ${isActive ? "active" : ""}`
+          }
+        >
+          <Settings size={20} />
+          <span>Settings</span>
+        </NavLink>
+
+      </nav>
+
+      {/* Sidebar Footer */}
+      <div className="admin-sidebar-footer">
+
         <button
-          className="btn btn-warning w-100 fw-bold d-flex align-items-center justify-content-center gap-2"
+          type="button"
+          className="admin-logout-button"
           onClick={handleLogout}
         >
           <LogOut size={18} />
-          Logout
+          <span>Logout</span>
         </button>
+
       </div>
+
     </aside>
   );
 }

@@ -8,349 +8,469 @@ import AdminLayout from "../Admin/AdminLayout";
 import RichTextEditor from "../Editor/RichTextEditor";
 
 export default function CreateArticle() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        title: "",
-        category: "",
-        excerpt: "",
-        content: "",
-        readTime: "5 min read",
-        author: "Lex Corpus",
-        image: "",
-        published: true,
-    });
+  const [formData, setFormData] = useState({
+    title: "",
+    category: "",
+    excerpt: "",
+    content: "",
+    readTime: "5 min read",
+    author: "Lex Corpus",
+    published: true,
+  });
 
-    const [loading, setLoading] = useState(false);
-    const [uploadingImage, setUploadingImage] = useState(false);
-    const [preview, setPreview] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
 
-        setFormData((prev) => ({
-            ...prev,
-            [name]: type === "checkbox" ? checked : value,
-        }));
-    };
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
-    const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (!file) return;
+    if (!formData.title.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Title Required",
+        text: "Please enter an article title.",
+        confirmButtonColor: "#b8860b",
+      });
+      return;
+    }
 
-        setPreview(URL.createObjectURL(file));
+    if (!formData.category) {
+      Swal.fire({
+        icon: "warning",
+        title: "Category Required",
+        text: "Please select an article category.",
+        confirmButtonColor: "#b8860b",
+      });
+      return;
+    }
 
-        const uploadData = new FormData();
-        uploadData.append("image", file);
+    if (!formData.excerpt.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Excerpt Required",
+        text: "Please add a short summary of the article.",
+        confirmButtonColor: "#b8860b",
+      });
+      return;
+    }
 
-        try {
-            setUploadingImage(true);
+    if (!formData.content || formData.content === "<p><br></p>") {
+      Swal.fire({
+        icon: "warning",
+        title: "Content Required",
+        text: "Please write the article content.",
+        confirmButtonColor: "#b8860b",
+      });
+      return;
+    }
 
-            const { data } = await axios.post(
-                `${ARTICLE_API}/upload-image`,
-                uploadData,
-                {
-                    withCredentials: true,
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                }
-            );
+    try {
+      setLoading(true);
 
-            setFormData((prev) => ({
-                ...prev,
-                image: data.imageUrl,
-            }));
-
-            Swal.fire({
-                icon: "success",
-                title: "Uploaded",
-                text: "Image uploaded successfully.",
-                timer: 1500,
-                showConfirmButton: false,
-            });
-        } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Upload Failed",
-                text:
-                    error.response?.data?.message ||
-                    "Unable to upload image.",
-            });
-
-            setPreview("");
-        } finally {
-            setUploadingImage(false);
+      const { data } = await axios.post(
+        `${ARTICLE_API}/create`,
+        formData,
+        {
+          withCredentials: true,
         }
-    };
+      );
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+      await Swal.fire({
+        icon: "success",
+        title: "Article Created",
+        text: data.message || "Article created successfully.",
+        timer: 1600,
+        showConfirmButton: false,
+      });
 
-        setLoading(true);
+      navigate("/admin/articles");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Creation Failed",
+        text:
+          error.response?.data?.message ||
+          "Unable to create article.",
+        confirmButtonColor: "#b8860b",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        try {
-            const { data } = await axios.post(
-                `${ARTICLE_API}/create`,
-                formData,
-                {
-                    withCredentials: true,
-                }
-            );
+  return (
+    <AdminLayout>
+      <div className="create-article-page">
 
-            await Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: data.message,
-            });
+        <div className="create-article-header">
 
-            navigate("/admin/articles");
-        } catch (error) {
-            Swal.fire({
-                icon: "error",
-                title: "Failed",
-                text:
-                    error.response?.data?.message ||
-                    "Unable to create article.",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
+          <div>
+            <div className="create-article-eyebrow">
+              CONTENT MANAGEMENT
+            </div>
 
-    return (
-        <AdminLayout>
-            <div className="container py-4">
-                <div className="card shadow border-0">
-                    <div className="card-header bg-dark text-white">
-                        <h3 className="mb-0">Create New Article</h3>
-                    </div>
+            <h1>Create Article</h1>
 
-                    <div className="card-body">
-                        <form onSubmit={handleSubmit}>
+            <p>
+              Write and publish a new legal insight for your readers.
+            </p>
+          </div>
 
-                            {/* Title */}
+          <button
+            type="button"
+            className="create-article-back"
+            onClick={() => navigate("/admin/articles")}
+          >
+            <i className="bi bi-arrow-left"></i>
+            Back to Articles
+          </button>
 
-                            <div className="mb-3">
-                                <label className="form-label fw-semibold">
-                                    Title <span className="text-danger">*</span>
-                                </label>
+        </div>
 
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleChange}
-                                    placeholder="Enter article title"
-                                    required
-                                />
-                            </div>
+        <form
+          className="create-article-form"
+          onSubmit={handleSubmit}
+        >
 
-                            {/* Category */}
+          <div className="create-article-main">
 
-                            <div className="mb-3">
-                                <label className="form-label fw-semibold">
-                                    Category <span className="text-danger">*</span>
-                                </label>
+            <div className="create-article-card">
 
-                                <select
-                                    className="form-select"
-                                    name="category"
-                                    value={formData.category}
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">Select Category</option>
-                                    <option value="Criminal">Criminal</option>
-                                    <option value="Civil">Civil</option>
-                                    <option value="Corporate">Corporate</option>
-                                    <option value="Cyber">Cyber</option>
-                                    <option value="IP">Intellectual Property</option>
-                                    <option value="Taxation">Taxation</option>
-                                    <option value="Family">Family</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
+              <div className="create-card-header">
+                <div>
+                  <span className="create-card-number">
+                    01
+                  </span>
 
-                            {/* Excerpt */}
+                  <div>
+                    <h2>Article Information</h2>
+                    <p>
+                      Add the basic information about your article.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-                            <div className="mb-3">
-                                <label className="form-label fw-semibold">
-                                    Excerpt <span className="text-danger">*</span>
-                                </label>
+              <div className="create-card-body">
 
-                                <textarea
-                                    className="form-control"
-                                    rows="3"
-                                    name="excerpt"
-                                    value={formData.excerpt}
-                                    onChange={handleChange}
-                                    placeholder="Short summary of article..."
-                                    required
-                                />
-                            </div>
+                <div className="create-field">
+                  <label htmlFor="title">
+                    Article Title
+                    <span>*</span>
+                  </label>
 
-                            {/* Content */}
-                            <div className="mb-4">
-                                <label className="form-label fw-semibold">
-                                    Content <span className="text-danger">*</span>
-                                </label>
+                  <input
+                    id="title"
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    placeholder="Enter a clear and engaging article title"
+                    required
+                  />
+                </div>
 
-                                <RichTextEditor
-                                    value={formData.content}
-                                    onChange={(html) =>
-                                        setFormData((prev) => ({
-                                            ...prev,
-                                            content: html,
-                                        }))
-                                    }
-                                />
+                <div className="create-form-grid">
 
-                                <small className="text-muted d-block mt-2">
-                                    Use the editor above to write and format your article.
-                                </small>
-                            </div>
+                  <div className="create-field">
+                    <label htmlFor="category">
+                      Category
+                      <span>*</span>
+                    </label>
 
-                            {/* Read Time & Author */}
+                    <select
+                      id="category"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">
+                        Select category
+                      </option>
+                      <option value="Criminal">
+                        Criminal
+                      </option>
+                      <option value="Civil">
+                        Civil
+                      </option>
+                      <option value="Corporate">
+                        Corporate
+                      </option>
+                      <option value="Cyber">
+                        Cyber
+                      </option>
+                      <option value="IP">
+                        Intellectual Property
+                      </option>
+                      <option value="Taxation">
+                        Taxation
+                      </option>
+                      <option value="Family">
+                        Family
+                      </option>
+                      <option value="Other">
+                        Other
+                      </option>
+                    </select>
+                  </div>
 
-                            <div className="row">
+                  <div className="create-field">
+                    <label htmlFor="readTime">
+                      Reading Time
+                    </label>
 
-                                <div className="col-md-6 mb-3">
-                                    <label className="form-label fw-semibold">
-                                        Read Time <span className="text-muted">(Optional)</span>
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        name="readTime"
-                                        value={formData.readTime}
-                                        onChange={handleChange}
-                                        placeholder="5 min read"
-                                    />
-                                </div>
-
-                                <div className="col-md-6 mb-3">
-                                    <label className="form-label fw-semibold">
-                                        Author <span className="text-muted">(Optional)</span>
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        name="author"
-                                        value={formData.author}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-
-                            </div>
-                            {/* Article Image */}
-
-                            <div className="mb-4">
-
-                                <label className="form-label fw-semibold">
-                                    Article Image <span className="text-muted">(Optional)</span>
-                                </label>
-
-                                <input
-                                    type="file"
-                                    className="form-control"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                />
-
-                                <small className="text-muted d-block mt-2">
-                                    You can publish the article without uploading an image.
-                                </small>
-
-                                {uploadingImage && (
-                                    <div className="mt-2 text-primary">
-                                        Uploading image...
-                                    </div>
-                                )}
-
-                                {preview && (
-                                    <div className="mt-3">
-                                        <img
-                                            src={preview}
-                                            alt="Preview"
-                                            className="img-fluid rounded border"
-                                            style={{
-                                                maxHeight: "300px",
-                                                objectFit: "cover",
-                                            }}
-                                        />
-                                    </div>
-                                )}
-
-                                {formData.image && (
-                                    <div className="mt-2">
-                                        <small className="text-success">
-                                            ✓ Image uploaded successfully
-                                        </small>
-                                    </div>
-                                )}
-
-                            </div>
-
-                            {/* Publish */}
-
-                            <div className="form-check mb-4">
-
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id="published"
-                                    name="published"
-                                    checked={formData.published}
-                                    onChange={handleChange}
-                                />
-
-                                <label
-                                    className="form-check-label"
-                                    htmlFor="published"
-                                >
-                                    Publish Immediately
-                                </label>
-
-                            </div>
-
-                            {/* Buttons */}
-
-                            <div className="d-flex gap-2">
-
-                                <button
-                                    type="submit"
-                                    className="btn btn-dark"
-                                    disabled={loading || uploadingImage}
-                                >
-                                    {loading
-                                        ? "Publishing..."
-                                        : uploadingImage
-                                            ? "Uploading..."
-                                            : "Publish Article"}
-                                </button>
-
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={() => navigate("/admin/articles")}
-                                >
-                                    Cancel
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
+                    <input
+                      id="readTime"
+                      type="text"
+                      name="readTime"
+                      value={formData.readTime}
+                      onChange={handleChange}
+                      placeholder="5 min read"
+                    />
+                  </div>
 
                 </div>
 
+                <div className="create-field">
+
+                  <label htmlFor="author">
+                    Author
+                  </label>
+
+                  <input
+                    id="author"
+                    type="text"
+                    name="author"
+                    value={formData.author}
+                    onChange={handleChange}
+                    placeholder="Author name"
+                  />
+
+                </div>
+
+                <div className="create-field">
+
+                  <label htmlFor="excerpt">
+                    Short Description
+                    <span>*</span>
+                  </label>
+
+                  <textarea
+                    id="excerpt"
+                    name="excerpt"
+                    value={formData.excerpt}
+                    onChange={handleChange}
+                    placeholder="Write a short summary that will appear on the article listing page..."
+                    rows="4"
+                    required
+                  />
+
+                  <div className="create-field-help">
+                    Keep this concise. A good excerpt usually takes
+                    1–3 sentences.
+                  </div>
+
+                </div>
+
+              </div>
+
             </div>
-        </AdminLayout>
-    );
+
+            <div className="create-article-card">
+
+              <div className="create-card-header">
+
+                <div>
+                  <span className="create-card-number">
+                    02
+                  </span>
+
+                  <div>
+                    <h2>Article Content</h2>
+                    <p>
+                      Write and format the complete article.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+              <div className="create-card-body">
+
+                <div className="create-editor-label">
+                  <label>
+                    Content
+                    <span>*</span>
+                  </label>
+
+                  <span>
+                    Rich text editor
+                  </span>
+                </div>
+
+                <div className="create-editor-wrapper">
+                  <RichTextEditor
+                    value={formData.content}
+                    onChange={(html) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        content: html,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="create-field-help editor-help">
+                  Use headings, lists, links and formatting to make
+                  your legal content easier to read.
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <aside className="create-article-sidebar">
+
+            <div className="publish-card">
+
+              <div className="publish-card-top">
+
+                <div>
+                  <span className="publish-eyebrow">
+                    PUBLISHING
+                  </span>
+
+                  <h2>Article Status</h2>
+                </div>
+
+                <div
+                  className={`publish-status ${
+                    formData.published
+                      ? "is-published"
+                      : "is-draft"
+                  }`}
+                >
+                  <span></span>
+                  {formData.published
+                    ? "Published"
+                    : "Draft"}
+                </div>
+
+              </div>
+
+              <div className="publish-divider"></div>
+
+              <label
+                className="publish-toggle"
+                htmlFor="published"
+              >
+
+                <div className="publish-toggle-text">
+
+                  <strong>
+                    Publish immediately
+                  </strong>
+
+                  <span>
+                    Make this article visible to readers
+                    after creation.
+                  </span>
+
+                </div>
+
+                <input
+                  id="published"
+                  type="checkbox"
+                  name="published"
+                  checked={formData.published}
+                  onChange={handleChange}
+                />
+
+                <span className="publish-switch"></span>
+
+              </label>
+
+            </div>
+
+            <div className="article-summary-card">
+
+              <div className="summary-title">
+                <i className="bi bi-file-earmark-text"></i>
+                Article Summary
+              </div>
+
+              <div className="summary-item">
+                <span>Category</span>
+                <strong>
+                  {formData.category || "Not selected"}
+                </strong>
+              </div>
+
+              <div className="summary-item">
+                <span>Reading time</span>
+                <strong>
+                  {formData.readTime || "Not specified"}
+                </strong>
+              </div>
+
+              <div className="summary-item">
+                <span>Author</span>
+                <strong>
+                  {formData.author || "Not specified"}
+                </strong>
+              </div>
+
+            </div>
+
+            <div className="create-actions">
+
+              <button
+                type="submit"
+                className="create-publish-btn"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="create-spinner"></span>
+                    Publishing...
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-check2"></i>
+                    Publish Article
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className="create-cancel-btn"
+                onClick={() => navigate("/admin/articles")}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+
+            </div>
+
+          </aside>
+
+        </form>
+
+      </div>
+    </AdminLayout>
+  );
 }

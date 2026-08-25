@@ -39,15 +39,17 @@ export default function ContactUs() {
         setSettings(data.settings);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Failed to fetch settings:", error);
     }
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -75,12 +77,47 @@ export default function ContactUs() {
       return;
     }
 
+    const requiredFields = [
+      ["fullname", "Full name"],
+      ["phoneNumber", "Phone number"],
+      ["email", "Email"],
+      ["subject", "Subject"],
+      ["practiceArea", "Practice area"],
+      ["message", "Brief of matter"],
+    ];
+
+    const missingField = requiredFields.find(
+      ([field]) => !formData[field]?.trim()
+    );
+
+    if (missingField) {
+      Swal.fire({
+        icon: "warning",
+        title: "Incomplete Form",
+        text: `Please enter your ${missingField[1].toLowerCase()}.`,
+        confirmButtonColor: "#b8860b",
+      });
+
+      return;
+    }
+
     try {
       setLoading(true);
 
+      const payload = {
+        fullname: formData.fullname.trim(),
+        phoneNumber: formData.phoneNumber.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        practiceArea: formData.practiceArea.trim(),
+        message: formData.message.trim(),
+      };
+
+      console.log("Submitting query:", payload);
+
       const { data } = await axios.post(
         `${QUERY_API}/create`,
-        formData,
+        payload,
         {
           withCredentials: true,
         }
@@ -89,7 +126,9 @@ export default function ContactUs() {
       await Swal.fire({
         icon: "success",
         title: "Query Submitted Successfully",
-        text: "Redirecting to Home...",
+        text:
+          data?.message ||
+          "Your legal query has been submitted successfully.",
         timer: 2500,
         showConfirmButton: false,
       });
@@ -105,12 +144,15 @@ export default function ContactUs() {
 
       navigate("/");
     } catch (error) {
+      console.error("Query submission error:", error);
+
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
         text:
           error.response?.data?.message ||
-          "Something went wrong.",
+          "Something went wrong while submitting your query.",
+        confirmButtonColor: "#b8860b",
       });
     } finally {
       setLoading(false);
@@ -120,11 +162,7 @@ export default function ContactUs() {
   return (
     <section className="contact" id="contactUs">
       <div className="wrap contact-grid">
-
-        {/* Left */}
-
         <div className="contact-info">
-
           <div className="eyebrow">
             Get in touch
           </div>
@@ -138,7 +176,6 @@ export default function ContactUs() {
           </p>
 
           <ul className="info-list">
-
             <li>
               <span className="k">Office</span>
 
@@ -151,10 +188,13 @@ export default function ContactUs() {
               <span className="k">Phone</span>
 
               <span className="v">
-
-                <a href={`tel:${settings.phone}`}>
-                  {settings.phone || "Not Available"}
-                </a>
+                {settings.phone ? (
+                  <a href={`tel:${settings.phone}`}>
+                    {settings.phone}
+                  </a>
+                ) : (
+                  "Not Available"
+                )}
 
                 {settings.whatsapp && (
                   <>
@@ -172,7 +212,6 @@ export default function ContactUs() {
                     </a>
                   </>
                 )}
-
               </span>
             </li>
 
@@ -180,9 +219,13 @@ export default function ContactUs() {
               <span className="k">Email</span>
 
               <span className="v">
-                <a href={`mailto:${settings.contactEmail}`}>
-                  {settings.contactEmail || "Not Available"}
-                </a>
+                {settings.contactEmail ? (
+                  <a href={`mailto:${settings.contactEmail}`}>
+                    {settings.contactEmail}
+                  </a>
+                ) : (
+                  "Not Available"
+                )}
               </span>
             </li>
 
@@ -201,109 +244,178 @@ export default function ContactUs() {
                 </span>
               </li>
             )}
-
           </ul>
-
         </div>
-
-        {/* Right Form */}
 
         <form
           className="brief-form"
           onSubmit={handleSubmit}
         >
+          <div className="form-heading">
+            <div className="form-eyebrow">
+              Consultation
+            </div>
+
+            <span className="form-number">
+              01
+            </span>
+
+            <h3>
+              Tell us about your matter
+            </h3>
+          </div>
 
           <div className="form-row">
-
             <div className="field">
-              <label>Full name</label>
+              <label htmlFor="fullname">
+                Full Name
+              </label>
 
               <input
+                id="fullname"
                 type="text"
                 name="fullname"
-                placeholder="Your name"
+                placeholder="Your full name"
                 value={formData.fullname}
                 onChange={handleChange}
+                autoComplete="name"
                 required
               />
             </div>
 
             <div className="field">
-              <label>Phone Number</label>
+              <label htmlFor="phoneNumber">
+                Phone Number
+              </label>
 
               <input
+                id="phoneNumber"
                 type="tel"
                 name="phoneNumber"
                 placeholder="+91 98XXXXXXXX"
                 value={formData.phoneNumber}
                 onChange={handleChange}
+                autoComplete="tel"
                 required
               />
             </div>
-
           </div>
-
-         <div className="form-row">
-           <div className="field full">
-            <label>Email</label>
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              style={{ width: "100%" }}
-            />
-          </div>
-
-         </div>
-
-
-
 
           <div className="form-row">
-
             <div className="field full">
-
-              <label>Subject</label>
+              <label htmlFor="email">
+                Email Address
+              </label>
 
               <input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                autoComplete="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="field full">
+              <label htmlFor="practiceArea">
+                Practice Area
+              </label>
+
+              <select
+                id="practiceArea"
+                name="practiceArea"
+                value={formData.practiceArea}
+                onChange={handleChange}
+                required
+              >
+                <option value="">
+                  Select a practice area
+                </option>
+
+                <option value="Criminal Law">
+                  Criminal Law
+                </option>
+
+                <option value="Civil Law">
+                  Civil Law
+                </option>
+
+                <option value="Family Law">
+                  Family Law
+                </option>
+
+                <option value="Matrimonial Law">
+                  Matrimonial Law
+                </option>
+
+                <option value="Corporate Law">
+                  Corporate Law
+                </option>
+
+                <option value="Cyber Law">
+                  Cyber Law
+                </option>
+
+                <option value="Intellectual Property">
+                  Intellectual Property
+                </option>
+
+                <option value="Taxation">
+                  Taxation
+                </option>
+
+                <option value="Other">
+                  Other
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="field full">
+              <label htmlFor="subject">
+                Subject
+              </label>
+
+              <input
+                id="subject"
                 type="text"
                 name="subject"
-                placeholder="Enter subject"
+                placeholder="Brief subject of your matter"
                 value={formData.subject}
                 onChange={handleChange}
                 required
               />
-
             </div>
-
           </div>
 
           <div className="form-row">
-
             <div className="field full">
-
-              <label>Brief of Matter</label>
+              <label htmlFor="message">
+                Brief of Matter
+              </label>
 
               <textarea
+                id="message"
                 name="message"
                 placeholder="Describe your legal issue..."
                 value={formData.message}
                 onChange={handleChange}
+                rows="6"
                 required
               />
-
             </div>
-
           </div>
 
           <div className="submit-row">
-
             <span className="note">
-              By submitting, you agree this does not yet create an attorney-client relationship.
+              By submitting, you acknowledge that this does not
+              create an attorney-client relationship.
             </span>
 
             <button
@@ -311,13 +423,17 @@ export default function ContactUs() {
               className="submit-btn"
               disabled={loading}
             >
-              {loading ? "Submitting..." : "Submit Brief"}
+              {loading ? (
+                "Submitting..."
+              ) : (
+                <>
+                  Submit Brief
+                  <span>→</span>
+                </>
+              )}
             </button>
-
           </div>
-
         </form>
-
       </div>
     </section>
   );

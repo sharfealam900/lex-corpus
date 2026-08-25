@@ -1,57 +1,130 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from './Navbar'
-import { SETTING_API } from "../utils/constant";
-import axios from 'axios';
+import React from "react";
+import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function About() {
-  const [settings, setSettings] = useState({
-    aboutTitle: "",
-    aboutHeading: "",
-    aboutDescription: "",
-    aboutMission: "",
-    aboutVision: "",
-    aboutExperience: "",
-    aboutCasesWon: "",
-    aboutHappyClients: "",
-    aboutExpertLawyers: "",
-  })
+    return (
+        <section className="about-section" id="about">
+            <div className="about-wrap">
 
-  const fetchSettings = async () => {
-    try {
-      const { data } = await axios.get(SETTING_API);
+                <div className="about-top">
+                    <div className="about-label">
+                        <span>03</span>
+                        <i></i>
+                        <span>ABOUT LEX CORPUS</span>
+                    </div>
 
-      if (data.success) {
-        setSettings(data.settings);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+                    <div className="about-location">
+                        <span>LEX CORPUS</span>
+                        <span>LEGAL COUNSEL · INDIA</span>
+                    </div>
+                </div>
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
+                <div className="about-main">
+                    <div className="about-title-area">
+                        <h2>
+                            Law with
+                            <br />
+                            <em>clarity.</em>
+                        </h2>
 
-  return (
-    <>
-      {/* <Navbar/> */}
-<section className="about" id="about">
-  <div className="wrap">
+                        <div className="about-mark">
+                            LC
+                        </div>
+                    </div>
 
-    <div className="about-content">
+                    <div className="about-content">
+                        <p className="about-lead">
+                            Legal problems can be complex.
+                            Your understanding of them
+                            shouldn't be.
+                        </p>
 
-      <div className="eyebrow">
-        {settings.aboutTitle}
-      </div>
+                        <p>
+                            Lex Corpus is built around a
+                            straightforward principle:
+                            understand the matter carefully,
+                            explain the position clearly,
+                            and pursue the right legal
+                            strategy with discipline.
+                        </p>
 
-      <h2>{settings.aboutHeading}</h2>
+                        <p>
+                            We combine legal knowledge with
+                            practical thinking to help clients
+                            make informed decisions when the
+                            stakes matter.
+                        </p>
 
-      <p>{settings.aboutDescription}</p>
+                        <Link
+                            to="/contactUs"
+                            className="about-button"
+                        >
+                            Speak with us
+                            <ArrowUpRight size={16} />
+                        </Link>
+                    </div>
+                </div>
 
-    </div>
+                <div className="about-values">
 
-  </div>
-</section>
-    </>
-  )
+                    <div className="about-value">
+                        <span className="about-value-number">
+                            01
+                        </span>
+
+                        <div>
+                            <h3>Clarity</h3>
+                            <p>
+                                Complex legal issues are
+                                explained in a direct,
+                                understandable way.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="about-value">
+                        <span className="about-value-number">
+                            02
+                        </span>
+
+                        <div>
+                            <h3>Strategy</h3>
+                            <p>
+                                Every matter begins with
+                                understanding the facts and
+                                identifying the right approach.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="about-value">
+                        <span className="about-value-number">
+                            03
+                        </span>
+
+                        <div>
+                            <h3>Commitment</h3>
+                            <p>
+                                We remain focused on the
+                                interests and objectives of
+                                every client.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div className="about-bottom">
+                    <span>EST. LEX CORPUS</span>
+
+                    <span>
+                        TRUST · STRATEGY · REPRESENTATION
+                    </span>
+
+                    <span>03 / 06</span>
+                </div>
+            </div>
+        </section>
+    );
 }

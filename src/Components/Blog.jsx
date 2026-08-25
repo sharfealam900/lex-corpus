@@ -5,206 +5,412 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { ARTICLE_API } from "../utils/constant";
 
-
-
 export default function Blog() {
-    const [articles, setArticles] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [activeTag, setActiveTag] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTag, setActiveTag] = useState("All");
 
-    const fetchArticles = async () => {
-        try {
-            const { data } = await axios.get(ARTICLE_API);
+  // =========================
+  // FETCH ARTICLES
+  // =========================
 
-            if (data.success) {
-                setArticles(data.articles);
-            }
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fetchArticles = async () => {
+    try {
+      const { data } = await axios.get(ARTICLE_API);
 
-    useEffect(() => {
-        fetchArticles();
-    }, []);
+      if (data.success) {
+        setArticles(data.articles || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch articles:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const tags = useMemo(() => {
-        return [
-            "All",
-            ...new Set(
-                articles.map((article) => article.category)
-            ),
-        ];
-    }, [articles]);
+  useEffect(() => {
+    fetchArticles();
+  }, []);
 
-    const filteredArticles = useMemo(() => {
-        return articles.filter((article) => {
-            const tagMatch =
-                activeTag === "All" ||
-                article.category === activeTag;
+  // =========================
+  // CATEGORIES
+  // =========================
 
-            const searchMatch = (
-                article.title +
-                article.excerpt +
-                article.content +
-                article.category
-            )
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase());
+  const tags = useMemo(() => {
+    const categories = articles
+      .map((article) => article.category)
+      .filter(Boolean);
 
-            return tagMatch && searchMatch;
-        });
-    }, [articles, activeTag, searchTerm]);
+    return ["All", ...new Set(categories)];
+  }, [articles]);
 
-    const formatDate = (date) =>
-        new Date(date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-        });
+  // =========================
+  // FILTER ARTICLES
+  // =========================
 
-    return (
-        <>
-            <Navbar />
+  const filteredArticles = useMemo(() => {
+    const search = searchTerm.trim().toLowerCase();
 
-            <section className="page-head">
-                <div className="wrap">
-                    <div className="eyebrow">Insights</div>
+    return articles.filter((article) => {
+      const tagMatch =
+        activeTag === "All" ||
+        article.category === activeTag;
 
-                    <h1>
-                        Notes from <em>the practice</em>
-                    </h1>
+      if (!search) {
+        return tagMatch;
+      }
 
-                    <p>
-                        Articles from our associates on cases,
-                        rulings and legal procedures written in
-                        simple language for everyone.
-                    </p>
-                </div>
-            </section>
+      const searchableText = [
+        article.title,
+        article.excerpt,
+        article.content,
+        article.category,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
 
-            <section className="toolbar">
-                <div className="wrap">
-                    <div className="toolbar-row">
-                        <div className="filter-tags">
-                            {tags.map((tag) => (
-                                <button
-                                    key={tag}
-                                    className={`filter-tag ${activeTag === tag ? "active" : ""
-                                        }`}
-                                    onClick={() => setActiveTag(tag)}
-                                >
-                                    {tag}
-                                </button>
-                            ))}
-                        </div>
+      return tagMatch && searchableText.includes(search);
+    });
+  }, [articles, activeTag, searchTerm]);
 
-                        <label
-                            className="search-box"
-                            htmlFor="search"
-                        >
-                            <input
-                                id="search"
-                                type="text"
-                                placeholder="Search Articles..."
-                                value={searchTerm}
-                                onChange={(e) =>
-                                    setSearchTerm(e.target.value)
-                                }
-                            />
-                        </label>
-                    </div>
-                </div>
-            </section>
+  // =========================
+  // DATE FORMAT
+  // =========================
 
-            <section className="blog-grid">
-                <div className="wrap">
+  const formatDate = (date) => {
+    if (!date) return "";
 
-                    {loading ? (
-                        <div
-                            style={{
-                                textAlign: "center",
-                                padding: "80px 0",
-                            }}
-                        >
-                            <h2>Loading Articles...</h2>
-                        </div>
-                    ) : filteredArticles.length === 0 ? (
-                        <div
-                            style={{
-                                textAlign: "center",
-                                padding: "80px 0",
-                            }}
-                        >
-                            <h2>No Articles Found</h2>
-                        </div>
-                    ) : (
-                        <div className="grid">
-                            {filteredArticles.map((article) => (
-                                <Link
-                                    key={article._id}
-                                    to={`/article/${article._id}`}
-                                    style={{
-                                        textDecoration: "none",
-                                        color: "inherit",
-                                        display: "block",
-                                    }}
-                                >
-                                    <article className="card">
-                                        <div className="card-top">
-                                            <span className="insight-tag">
-                                                {article.category}
-                                            </span>
-                                        </div>
+    const formatted = new Date(date);
 
-                                        {article.image && (
-                                            <img
-                                                src={article.image}
-                                                alt={article.title}
-                                                style={{
-                                                    width: "100%",
-                                                    height: "220px",
-                                                    objectFit: "cover",
-                                                    borderRadius: "12px",
-                                                    marginBottom: "20px",
-                                                }}
-                                            />
-                                        )}
+    if (Number.isNaN(formatted.getTime())) {
+      return "";
+    }
 
-                                        <h3>{article.title}</h3>
+    return formatted.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
-                                        <p>{article.excerpt}</p>
+  // =========================
+  // RESET FILTER
+  // =========================
 
-                                        <div className="card-meta">
-                                            <span>{formatDate(article.createdAt)}</span>
-                                            <span>{article.readTime}</span>
-                                        </div>
+  const resetFilters = () => {
+    setSearchTerm("");
+    setActiveTag("All");
+  };
 
-                                        <span
-                                            style={{
-                                                marginTop: "18px",
-                                                display: "inline-block",
-                                                color: "#b68d40",
-                                                fontWeight: "600",
-                                            }}
-                                        >
-                                            Read More →
-                                        </span>
-                                    </article>
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </section>
+  return (
+    <>
+      <Navbar />
 
-            <div className="blog-footer">
-                <Footer />
+      <main className="blog-page">
+
+        {/* =====================================================
+            HERO
+        ====================================================== */}
+
+        <section className="blog-hero">
+
+          <div className="wrap">
+
+            <div className="blog-hero-content">
+
+              <div className="eyebrow">
+                Insights
+              </div>
+
+              <h1>
+                Notes from <em>the practice</em>
+              </h1>
+
+              <p>
+                Articles from our associates on cases, rulings
+                and legal procedures written in simple language
+                for everyone.
+              </p>
+
             </div>
-        </>
-    );
+
+            <div className="blog-hero-meta">
+
+              <span>
+                {articles.length}{" "}
+                {articles.length === 1
+                  ? "ARTICLE"
+                  : "ARTICLES"}
+              </span>
+
+              <span>
+                LEX CORPUS
+              </span>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =====================================================
+            FILTER / SEARCH
+        ====================================================== */}
+
+        <section className="blog-toolbar">
+
+          <div className="wrap">
+
+            <div className="blog-toolbar-inner">
+
+              <div className="filter-tags">
+
+                {tags.map((tag) => (
+
+                  <button
+                    key={tag}
+                    type="button"
+                    className={`filter-tag ${
+                      activeTag === tag
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      setActiveTag(tag)
+                    }
+                  >
+                    {tag}
+                  </button>
+
+                ))}
+
+              </div>
+
+
+              <div className="blog-search">
+
+                <span className="search-icon">
+                  <i className="bi bi-search"></i>
+                </span>
+
+                <input
+                  type="search"
+                  placeholder="Search articles"
+                  value={searchTerm}
+                  onChange={(e) =>
+                    setSearchTerm(e.target.value)
+                  }
+                  aria-label="Search articles"
+                />
+
+                {searchTerm && (
+
+                  <button
+                    type="button"
+                    className="clear-search"
+                    onClick={() =>
+                      setSearchTerm("")
+                    }
+                    aria-label="Clear search"
+                  >
+                    <i className="bi bi-x"></i>
+                  </button>
+
+                )}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        {/* =====================================================
+            ARTICLES
+        ====================================================== */}
+
+        <section className="blog-content">
+
+          <div className="wrap">
+
+            {/* LOADING */}
+
+            {loading ? (
+
+              <div className="blog-state">
+
+                <div className="blog-loader"></div>
+
+                <p>
+                  Loading insights...
+                </p>
+
+              </div>
+
+            ) : filteredArticles.length === 0 ? (
+
+              /* EMPTY */
+
+              <div className="blog-empty">
+
+                <div className="empty-icon">
+                  <i className="bi bi-journal-text"></i>
+                </div>
+
+                <h2>
+                  No articles found
+                </h2>
+
+                <p>
+                  Try another search term or select
+                  a different practice area.
+                </p>
+
+                {(searchTerm ||
+                  activeTag !== "All") && (
+
+                  <button
+                    type="button"
+                    onClick={resetFilters}
+                  >
+                    View all articles
+                  </button>
+
+                )}
+
+              </div>
+
+            ) : (
+
+              <>
+
+                {/* RESULT COUNT */}
+
+                <div className="blog-result-info">
+
+                  <span>
+                    {filteredArticles.length}{" "}
+                    {filteredArticles.length === 1
+                      ? "RESULT"
+                      : "RESULTS"}
+                  </span>
+
+                  {activeTag !== "All" && (
+
+                    <span>
+                      {activeTag}
+                    </span>
+
+                  )}
+
+                </div>
+
+
+                {/* ARTICLE GRID */}
+
+                <div className="blog-grid-list">
+
+                  {filteredArticles.map(
+                    (article) => (
+
+                      <Link
+                        key={article._id}
+                        to={`/article/${article._id}`}
+                        className="blog-card-link"
+                      >
+
+                        <article className="blog-card">
+
+                          {/* TOP */}
+
+                          <div className="blog-card-top">
+
+                            <span className="blog-card-category">
+
+                              {article.category ||
+                                "Legal Insight"}
+
+                            </span>
+
+                          </div>
+
+
+                          {/* BODY */}
+
+                          <div className="blog-card-body">
+
+                            <div className="blog-card-date">
+
+                              {formatDate(
+                                article.createdAt
+                              )}
+
+                            </div>
+
+
+                            <h2>
+                              {article.title}
+                            </h2>
+
+
+                            <p>
+                              {article.excerpt ||
+                                "Read this legal insight from Lex Corpus."}
+                            </p>
+
+
+                            {/* BOTTOM */}
+
+                            <div className="blog-card-bottom">
+
+                              <span className="blog-read-time">
+
+                                {article.readTime ||
+                                  "5 min read"}
+
+                              </span>
+
+
+                              <span className="blog-read-more">
+
+                                Read article
+
+                                <span className="read-arrow">
+                                  ↗
+                                </span>
+
+                              </span>
+
+                            </div>
+
+                          </div>
+
+                        </article>
+
+                      </Link>
+
+                    )
+                  )}
+
+                </div>
+
+              </>
+
+            )}
+
+          </div>
+
+        </section>
+
+      </main>
+
+      <Footer />
+    </>
+  );
 }
