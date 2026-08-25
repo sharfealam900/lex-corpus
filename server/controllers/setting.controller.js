@@ -1,13 +1,45 @@
 import Setting from "../models/setting.model.js";
 
- 
-// Get Website Settings
+const allowedFields = [
+  "websiteName",
+  "tagline",
+  "logo",
+  "aboutTitle",
+  "aboutHeading",
+  "aboutDescription",
+  "aboutMission",
+  "aboutVision",
+  "aboutImage",
+  "aboutExperience",
+  "aboutCasesWon",
+  "aboutHappyClients",
+  "aboutExpertLawyers",
+  "favicon",
+  "contactEmail",
+  "phone",
+  "whatsapp",
+  "address",
+  "googleMap",
+  "facebook",
+  "instagram",
+  "linkedin",
+  "twitter",
+  "heroTitle",
+  "heroSubtitle",
+  "heroButtonText",
+  "heroButtonLink",
+  "metaTitle",
+  "metaDescription",
+  "metaKeywords",
+];
+
 export const getSettings = async (req, res) => {
   try {
-    let settings = await Setting.findOne();
+    let settings = await Setting.findOne().lean();
 
     if (!settings) {
       settings = await Setting.create({});
+      settings = settings.toObject();
     }
 
     return res.status(200).json({
@@ -15,28 +47,37 @@ export const getSettings = async (req, res) => {
       settings,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Get settings error:", error);
 
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to fetch settings.",
     });
   }
 };
 
- 
-// Update Website Settings
- 
 export const updateSettings = async (req, res) => {
   try {
-    let settings = await Setting.findOne();
+    const updateData = {};
 
-    if (!settings) {
-      settings = await Setting.create(req.body);
-    } else {
-      Object.assign(settings, req.body);
-      await settings.save();
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
     }
+
+    const settings = await Setting.findOneAndUpdate(
+      {},
+      {
+        $set: updateData,
+      },
+      {
+        new: true,
+        upsert: true,
+        runValidators: true,
+        setDefaultsOnInsert: true,
+      }
+    );
 
     return res.status(200).json({
       success: true,
@@ -44,11 +85,11 @@ export const updateSettings = async (req, res) => {
       settings,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Update settings error:", error);
 
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to update settings.",
     });
   }
 };

@@ -7,16 +7,32 @@ import {
   deletePractice,
 } from "../controllers/practice.controller.js";
 
+import isAuthenticated from "../middleware/isAuthenticated.js";
+import isAdmin from "../middleware/isAdmin.js";
+
 const router = express.Router();
 
-// Public
 router.get("/", getPractices);
 
-// Admin
-router.post("/", createPractice);
+router.post(
+  "/",
+  isAuthenticated,
+  isAdmin,
+  createPractice
+);
 
-router.put("/:id", updatePractice);
+router.put(
+  "/:id",
+  isAuthenticated,
+  isAdmin,
+  updatePractice
+);
 
-router.delete("/:id", deletePractice);
+router.delete(
+  "/:id",
+  isAuthenticated,
+  isAdmin,
+  deletePractice
+);
 
 export default router;

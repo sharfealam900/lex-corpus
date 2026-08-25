@@ -4,8 +4,6 @@ const isAuthenticated = async (req, res, next) => {
   try {
     const token = req.cookies.token;
 
-    console.log("Token:", token);
-
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -13,18 +11,22 @@ const isAuthenticated = async (req, res, next) => {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
 
-    console.log("Decoded:", decoded);
+    if (!decoded?.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid authentication token.",
+      });
+    }
 
     req.id = decoded.userId;
 
-    console.log("req.id:", req.id);
-
     next();
   } catch (error) {
-    console.log(error);
-
     return res.status(401).json({
       success: false,
       message: "Invalid or expired token.",

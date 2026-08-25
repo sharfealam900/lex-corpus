@@ -6,6 +6,7 @@ const articleSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      maxlength: 200,
     },
 
     category: {
@@ -27,31 +28,47 @@ const articleSchema = new mongoose.Schema(
       type: String,
       required: true,
       maxlength: 300,
+      trim: true,
     },
 
     content: {
       type: String,
       required: true,
+      maxlength: 100000,
     },
 
     readTime: {
       type: String,
       default: "5 min read",
+      trim: true,
+      maxlength: 50,
     },
 
     author: {
       type: String,
       default: "Lex Corpus",
+      trim: true,
+      maxlength: 100,
     },
 
     image: {
-      type: String,
-      default: "",
+      url: {
+        type: String,
+        default: "",
+        trim: true,
+      },
+
+      publicId: {
+        type: String,
+        default: "",
+        trim: true,
+      },
     },
 
     published: {
       type: Boolean,
       default: true,
+      index: true,
     },
   },
   {
@@ -59,4 +76,14 @@ const articleSchema = new mongoose.Schema(
   }
 );
 
-export const Article = mongoose.model("Article", articleSchema);
+articleSchema.index({
+  published: 1,
+  createdAt: -1,
+});
+
+const Article = mongoose.model(
+  "Article",
+  articleSchema
+);
+
+export { Article };

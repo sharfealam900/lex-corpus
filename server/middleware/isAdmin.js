@@ -2,7 +2,9 @@ import User from "../models/user.model.js";
 
 const isAdmin = async (req, res, next) => {
   try {
-    const user = await User.findById(req.id);
+    const user = await User.findById(req.id)
+      .select("_id role")
+      .lean();
 
     if (!user) {
       return res.status(404).json({
@@ -20,11 +22,11 @@ const isAdmin = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error(error);
+    console.error("Admin authorization error:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: "Internal Server Error.",
     });
   }
 };

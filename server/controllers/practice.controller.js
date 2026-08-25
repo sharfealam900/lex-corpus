@@ -1,77 +1,157 @@
 import Practice from "../models/practice.model.js";
 
-// Create Practice
 export const createPractice = async (req, res) => {
   try {
-    const practice = await Practice.create(req.body);
+    const {
+      title,
+      description,
+      icon,
+      order,
+      isActive,
+    } = req.body;
 
-    res.status(201).json({
+    if (!title || !description) {
+      return res.status(400).json({
+        success: false,
+        message: "Title and description are required.",
+      });
+    }
+
+    const practice = await Practice.create({
+      title: title.trim(),
+      description: description.trim(),
+      icon,
+      order,
+      isActive,
+    });
+
+    return res.status(201).json({
       success: true,
       message: "Practice created successfully.",
       practice,
     });
   } catch (error) {
-    res.status(500).json({
+    console.error("Create practice error:", error);
+
+    return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to create practice.",
     });
   }
 };
 
-// Get All Practices
 export const getPractices = async (req, res) => {
   try {
     const practices = await Practice.find({
       isActive: true,
-    }).sort({ order: 1 });
+    })
+      .sort({ order: 1 })
+      .lean();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
+      count: practices.length,
       practices,
     });
   } catch (error) {
-    res.status(500).json({
+    console.error("Get practices error:", error);
+
+    return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to fetch practices.",
     });
   }
 };
 
-// Update Practice
 export const updatePractice = async (req, res) => {
   try {
+    const {
+      title,
+      description,
+      icon,
+      order,
+      isActive,
+    } = req.body;
+
+    const updateData = {
+      title,
+      description,
+      icon,
+      order,
+      isActive,
+    };
+
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      }
+    });
+
+    if (typeof updateData.title === "string") {
+      updateData.title = updateData.title.trim();
+    }
+
+    if (typeof updateData.description === "string") {
+      updateData.description =
+        updateData.description.trim();
+    }
+
     const practice = await Practice.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      { new: true }
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
-    res.status(200).json({
+    if (!practice) {
+      return res.status(404).json({
+        success: false,
+        message: "Practice not found.",
+      });
+    }
+
+    return res.status(200).json({
       success: true,
       message: "Practice updated successfully.",
       practice,
     });
   } catch (error) {
-    res.status(500).json({
+    console.error("Update practice error:", error);
+
+    return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to update practice.",
     });
   }
 };
 
-// Delete Practice
 export const deletePractice = async (req, res) => {
   try {
+    const practice = await Practice.findById(
+      req.params.id
+    );
+
+    if (!practice) {
+      return res.status(404).json({
+        success: false,
+        message: "Practice not found.",
+      });
+    }
+
     await Practice.findByIdAndDelete(req.params.id);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Practice deleted successfully.",
     });
   } catch (error) {
-    res.status(500).json({
+    console.error("Delete practice error:", error);
+
+    return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to delete practice.",
     });
   }
 };
